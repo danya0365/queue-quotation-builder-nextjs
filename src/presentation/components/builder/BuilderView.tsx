@@ -1,71 +1,46 @@
 'use client';
 
-import {
-    calculatePackagePrice,
-    FEATURE_CATEGORIES,
-    FEATURES,
-    formatPrice,
-    getFeaturesByCategory,
-    getMissingDependencies,
-    getPackagesForProjectType,
-    PROJECT_TYPES,
-    type Feature,
-    type FeatureLevel,
-    type FeaturePackage,
-} from '@/src/data/mock/mockFeatures';
-import { useQuotationStore } from '@/src/store/quotationStore';
-import { useMemo, useState } from 'react';
+import type { Feature, FeatureLevel, FeaturePackage } from '@/src/data/mock/mockFeatures';
+import { useBuilderPresenter } from '@/src/presentation/hooks/useBuilderPresenter';
 import { SummaryPanel } from './SummaryPanel';
 
 /**
  * BuilderView Component
  * Main view for quotation builder page
+ * Following Clean Architecture - uses presenter hook for logic
  */
 export function BuilderView() {
-  const [activeCategory, setActiveCategory] = useState<string>('all');
-  const [showCustomize, setShowCustomize] = useState(false);
   const {
+    // Constants
+    PROJECT_TYPES,
+    FEATURE_CATEGORIES,
+
+    // State
     projectType,
     selectedFeatures,
-    setProjectType,
+    activeCategory,
+    showCustomize,
+
+    // Computed
+    availablePackages,
+    groupedFeatures,
+    filteredCategories,
+
+    // Actions
+    handleSelectProjectType,
+    handleSelectPackage,
+    handleCustomize,
+    handleBackToPackages,
+    setActiveCategory,
     toggleFeature,
     canSelectFeature,
-    selectFeatures,
-    setDiscountPercent,
-  } = useQuotationStore();
 
-  // Get packages for selected project type
-  const availablePackages = useMemo(() => {
-    if (!projectType) return [];
-    return getPackagesForProjectType(projectType);
-  }, [projectType]);
-
-  // Filter features by category
-  const filteredFeatures = useMemo(() => {
-    if (activeCategory === 'all') {
-      return FEATURES;
-    }
-    return getFeaturesByCategory(activeCategory);
-  }, [activeCategory]);
-
-  // Group features by category for display
-  const groupedFeatures = useMemo(() => {
-    const groups: Record<string, Feature[]> = {};
-    filteredFeatures.forEach((feature) => {
-      if (!groups[feature.categoryId]) {
-        groups[feature.categoryId] = [];
-      }
-      groups[feature.categoryId].push(feature);
-    });
-    return groups;
-  }, [filteredFeatures]);
-
-  // Handle package selection
-  const handleSelectPackage = (pkg: FeaturePackage) => {
-    selectFeatures(pkg.features);
-    setDiscountPercent(pkg.discountPercent);
-    setShowCustomize(true); // Show features after selecting package
-  };
+    // Helpers
+    isFeatureRecommended,
+    getFeatureMissingDeps,
+    getPackagePrice,
+    formatPrice,
+  } = useBuilderPresenter();
 
   return (
     <div className="builder-page">
@@ -74,9 +49,7 @@ export function BuilderView() {
         <div className="builder-main">
           {/* Header */}
           <div className="builder-header">
-            <h1 className="builder-title">
-              สร้างใบเสนอราคา
-            </h1>
+            <h1 className="builder-title">สร้างใบเสนอราคา</h1>
             <p className="builder-subtitle">
               เลือกประเภทธุรกิจและแพ็กเกจที่ต้องการ หรือเลือกฟีเจอร์เอง
             </p>
@@ -84,12 +57,10 @@ export function BuilderView() {
 
           {/* Step 1: Project Type Selection */}
           <ProjectTypeSection
+            projectTypes={PROJECT_TYPES}
             selectedType={projectType}
-            onSelect={(id) => {
-              setProjectType(id);
-              selectFeatures([]); // Clear features when changing project type
-              setShowCustomize(false);
-            }}
+            onSelect={handleSelectProjectType}
+            formatPrice={formatPrice}
           />
 
           {/* Step 2: Package Selection (shown after selecting project type) */}
@@ -98,17 +69,19 @@ export function BuilderView() {
               packages={availablePackages}
               projectType={projectType}
               onSelectPackage={handleSelectPackage}
-              onCustomize={() => setShowCustomize(true)}
+              onCustomize={handleCustomize}
+              getPackagePrice={getPackagePrice}
+              formatPrice={formatPrice}
             />
           )}
 
-          {/* Step 3: Feature Customization (shown after selecting package or clicking customize) */}
+          {/* Step 3: Feature Customization */}
           {projectType && showCustomize && (
             <>
               {/* Back to Packages */}
               <div className="mb-4">
                 <button
-                  onClick={() => setShowCustomize(false)}
+                  onClick={handleBackToPackages}
                   className="text-indigo-600 dark:text-indigo-400 hover:underline text-sm"
                 >
                   ← กลับไปเลือกแพ็กเกจ
@@ -117,15 +90,14 @@ export function BuilderView() {
 
               {/* Category Filter */}
               <CategoryFilter
+                categories={FEATURE_CATEGORIES}
                 activeCategory={activeCategory}
                 onSelect={setActiveCategory}
               />
 
               {/* Features Grid */}
               <div className="builder-features">
-                {FEATURE_CATEGORIES.filter(
-                  (cat) => activeCategory === 'all' || cat.id === activeCategory
-                ).map((category) => {
+                {filteredCategories.map((category) => {
                   const categoryFeatures = groupedFeatures[category.id];
                   if (!categoryFeatures?.length) return null;
 
@@ -142,9 +114,10 @@ export function BuilderView() {
                             feature={feature}
                             isSelected={selectedFeatures.includes(feature.id)}
                             canSelect={canSelectFeature(feature.id)}
-                            selectedFeatures={selectedFeatures}
+                            missingDeps={getFeatureMissingDeps(feature.id)}
+                            isRecommended={isFeatureRecommended(feature)}
                             onToggle={() => toggleFeature(feature.id)}
-                            projectType={projectType}
+                            formatPrice={formatPrice}
                           />
                         ))}
                       </div>
@@ -164,24 +137,30 @@ export function BuilderView() {
 }
 
 // ============================================
-// Project Type Section
+// Sub-components
 // ============================================
+
 interface ProjectTypeSectionProps {
+  projectTypes: { id: string; name: string; icon: string; basePrice: number }[];
   selectedType: string | null;
   onSelect: (id: string | null) => void;
+  formatPrice: (price: number) => string;
 }
 
-function ProjectTypeSection({ selectedType, onSelect }: ProjectTypeSectionProps) {
+function ProjectTypeSection({
+  projectTypes,
+  selectedType,
+  onSelect,
+  formatPrice,
+}: ProjectTypeSectionProps) {
   return (
     <div className="builder-project-types">
-      <h2 className="builder-section-title">
-        1. เลือกประเภทธุรกิจ
-      </h2>
+      <h2 className="builder-section-title">1. เลือกประเภทธุรกิจ</h2>
       <div className="builder-project-grid">
-        {PROJECT_TYPES.map((type) => (
+        {projectTypes.map((type) => (
           <button
             key={type.id}
-            onClick={() => onSelect(selectedType === type.id ? null : type.id)}
+            onClick={() => onSelect(type.id)}
             className={`builder-project-card ${selectedType === type.id ? 'selected' : ''}`}
           >
             <span className="builder-project-icon">{type.icon}</span>
@@ -196,25 +175,28 @@ function ProjectTypeSection({ selectedType, onSelect }: ProjectTypeSectionProps)
   );
 }
 
-// ============================================
-// Package Section
-// ============================================
 interface PackageSectionProps {
   packages: FeaturePackage[];
   projectType: string;
   onSelectPackage: (pkg: FeaturePackage) => void;
   onCustomize: () => void;
+  getPackagePrice: (pkg: FeaturePackage) => number;
+  formatPrice: (price: number) => string;
 }
 
-function PackageSection({ packages, projectType, onSelectPackage, onCustomize }: PackageSectionProps) {
+function PackageSection({
+  packages,
+  onSelectPackage,
+  onCustomize,
+  getPackagePrice,
+  formatPrice,
+}: PackageSectionProps) {
   return (
     <div className="builder-packages">
-      <h2 className="builder-section-title">
-        2. เลือกแพ็กเกจ
-      </h2>
+      <h2 className="builder-section-title">2. เลือกแพ็กเกจ</h2>
       <div className="builder-package-grid">
         {packages.map((pkg) => {
-          const price = calculatePackagePrice(pkg, projectType);
+          const price = getPackagePrice(pkg);
           return (
             <button
               key={pkg.id}
@@ -235,13 +217,11 @@ function PackageSection({ packages, projectType, onSelectPackage, onCustomize }:
                   {pkg.features.length} ฟีเจอร์
                 </span>
               </div>
-              <div className="builder-package-price">
-                {formatPrice(price)}
-              </div>
+              <div className="builder-package-price">{formatPrice(price)}</div>
             </button>
           );
         })}
-        
+
         {/* Custom Option */}
         <button
           onClick={onCustomize}
@@ -264,15 +244,13 @@ function PackageSection({ packages, projectType, onSelectPackage, onCustomize }:
   );
 }
 
-// ============================================
-// Category Filter
-// ============================================
 interface CategoryFilterProps {
+  categories: { id: string; name: string; icon: string }[];
   activeCategory: string;
   onSelect: (id: string) => void;
 }
 
-function CategoryFilter({ activeCategory, onSelect }: CategoryFilterProps) {
+function CategoryFilter({ categories, activeCategory, onSelect }: CategoryFilterProps) {
   return (
     <div className="builder-category-filter">
       <button
@@ -281,7 +259,7 @@ function CategoryFilter({ activeCategory, onSelect }: CategoryFilterProps) {
       >
         ทั้งหมด
       </button>
-      {FEATURE_CATEGORIES.map((cat) => (
+      {categories.map((cat) => (
         <button
           key={cat.id}
           onClick={() => onSelect(cat.id)}
@@ -295,28 +273,25 @@ function CategoryFilter({ activeCategory, onSelect }: CategoryFilterProps) {
   );
 }
 
-// ============================================
-// Feature Card
-// ============================================
 interface FeatureCardProps {
   feature: Feature;
   isSelected: boolean;
   canSelect: boolean;
-  selectedFeatures: string[];
+  missingDeps: Feature[];
+  isRecommended: boolean;
   onToggle: () => void;
-  projectType: string | null;
+  formatPrice: (price: number) => string;
 }
 
 function FeatureCard({
   feature,
   isSelected,
   canSelect,
-  selectedFeatures,
+  missingDeps,
+  isRecommended,
   onToggle,
-  projectType,
+  formatPrice,
 }: FeatureCardProps) {
-  const missingDeps = getMissingDependencies(feature.id, selectedFeatures);
-  const isRecommended = projectType && feature.recommendedFor.includes(projectType);
   const isDisabled = !canSelect && !isSelected;
 
   return (
@@ -329,16 +304,14 @@ function FeatureCard({
         <span className="builder-feature-popular">🔥 ยอดนิยม</span>
       )}
 
-      {/* Recommended Badge - positioned below popular */}
+      {/* Recommended Badge */}
       {isRecommended && !feature.isPopular && (
         <span className="builder-feature-recommended">✨ แนะนำ</span>
       )}
 
       {/* Header */}
       <div className="builder-feature-header">
-        <div className="builder-feature-checkbox">
-          {isSelected && '✓'}
-        </div>
+        <div className="builder-feature-checkbox">{isSelected && '✓'}</div>
       </div>
 
       {/* Content */}
@@ -363,9 +336,6 @@ function FeatureCard({
   );
 }
 
-// ============================================
-// Level Badge
-// ============================================
 function LevelBadge({ level }: { level: FeatureLevel }) {
   const labels: Record<FeatureLevel, string> = {
     basic: 'Basic',
@@ -374,8 +344,6 @@ function LevelBadge({ level }: { level: FeatureLevel }) {
   };
 
   return (
-    <span className={`builder-feature-level level-${level}`}>
-      {labels[level]}
-    </span>
+    <span className={`builder-feature-level level-${level}`}>{labels[level]}</span>
   );
 }
