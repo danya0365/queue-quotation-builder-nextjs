@@ -888,6 +888,83 @@
   @apply focus:outline-none focus:ring-2 focus:ring-indigo-500;
 }
 
+/* ============================================
+   Mobile Floating Summary Bar
+   ============================================ */
+.mobile-summary-bar {
+  @apply fixed bottom-0 left-0 right-0 z-50;
+  @apply bg-white dark:bg-gray-900;
+  @apply border-t border-gray-200 dark:border-gray-700;
+  @apply shadow-2xl;
+}
+
+.mobile-summary-collapsed {
+  @apply flex items-center justify-between;
+  @apply px-4 py-3;
+  @apply cursor-pointer;
+}
+
+.mobile-summary-info {
+  @apply flex flex-col;
+}
+
+.mobile-summary-count {
+  @apply text-xs text-gray-500 dark:text-gray-400;
+}
+
+.mobile-summary-price {
+  @apply text-lg font-bold text-indigo-600 dark:text-indigo-400;
+}
+
+.mobile-summary-btn {
+  @apply px-4 py-2 rounded-lg;
+  @apply bg-indigo-600 text-white;
+  @apply text-sm font-semibold;
+  @apply transition-all duration-200;
+  @apply hover:bg-indigo-700;
+}
+
+.mobile-summary-expanded {
+  @apply px-4 py-4;
+  @apply border-b border-gray-200 dark:border-gray-700;
+  @apply bg-gray-50 dark:bg-gray-800;
+  @apply max-h-[60vh] overflow-y-auto;
+}
+
+.mobile-summary-header {
+  @apply flex items-center justify-between mb-3;
+}
+
+.mobile-summary-items {
+  @apply space-y-2 mb-4;
+}
+
+.mobile-summary-item {
+  @apply flex items-center justify-between;
+  @apply py-1.5 px-2 rounded;
+  @apply bg-white dark:bg-gray-700;
+  @apply text-sm;
+}
+
+.mobile-summary-item span:first-child {
+  @apply text-gray-700 dark:text-gray-300;
+  @apply flex-1 truncate mr-2;
+}
+
+.mobile-summary-item span:last-child {
+  @apply text-gray-900 dark:text-white font-medium;
+}
+
+.mobile-summary-total {
+  @apply py-3 px-3 rounded-lg;
+  @apply bg-white dark:bg-gray-700;
+  @apply mb-4;
+}
+
+.mobile-summary-actions {
+  @apply flex gap-2;
+}
+
 .builder-export-btn {
   @apply w-full mt-4;
   @apply py-3 rounded-xl;
@@ -2225,7 +2302,7 @@
 @media (max-width: 640px) {
   /* Builder Page - Mobile */
   .builder-page {
-    @apply py-3 px-2;
+    @apply py-3 px-2 pb-24; /* Extra bottom padding for floating bar */
   }
 
   .builder-container {
