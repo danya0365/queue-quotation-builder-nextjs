@@ -103,22 +103,22 @@ export function AboutView() {
         <div className="about-team-grid">
           <div className="about-team-member">
             <div className="about-team-avatar">👨‍💼</div>
-            <h4 className="about-team-name">คุณสมชาย</h4>
+            <h4 className="about-team-name">คุณมะรอสดี อุมา</h4>
             <p className="about-team-role">CEO & Founder</p>
           </div>
           <div className="about-team-member">
             <div className="about-team-avatar">👩‍💻</div>
-            <h4 className="about-team-name">คุณสมหญิง</h4>
+            <h4 className="about-team-name">คุณฟูซาน่า มะเซ็ง</h4>
             <p className="about-team-role">CTO</p>
           </div>
           <div className="about-team-member">
             <div className="about-team-avatar">👨‍🎨</div>
-            <h4 className="about-team-name">คุณนิรันดร์</h4>
+            <h4 className="about-team-name">คุณฟูซาน่า มะเซ็ง</h4>
             <p className="about-team-role">Lead Designer</p>
           </div>
           <div className="about-team-member">
             <div className="about-team-avatar">👩‍🔧</div>
-            <h4 className="about-team-name">คุณปิยะ</h4>
+            <h4 className="about-team-name">คุณมะรอสดี อุมา</h4>
             <p className="about-team-role">Support Lead</p>
           </div>
         </div>
@@ -134,8 +134,8 @@ export function AboutView() {
           <a href="/builder" className="about-cta-btn primary">
             สร้างใบเสนอราคา
           </a>
-          <a href="tel:021234567" className="about-cta-btn secondary">
-            📞 02-123-4567
+          <a href="tel:0984847773" className="about-cta-btn secondary">
+            📞 098-484-7773
           </a>
         </div>
       </section>

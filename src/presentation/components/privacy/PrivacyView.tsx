@@ -80,6 +80,6 @@ const PRIVACY_SECTIONS = [
   {
     title: '4. ติดต่อเรา',
     content: 'หากมีคำถามเกี่ยวกับนโยบายความเป็นส่วนตัว กรุณาติดต่อ:',
-    email: 'privacy@queuequote.com',
+    email: 'marosdee.fuzana@gmail.com',
   },
 ];

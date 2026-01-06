@@ -40,28 +40,28 @@ const CONTACT_INFO = [
   {
     icon: '📞',
     title: 'โทรศัพท์',
-    content: '02-xxx-xxxx',
+    content: '098-484-7773',
     subtitle: 'จันทร์-ศุกร์ 9:00-18:00',
   },
   {
     icon: '📧',
     title: 'อีเมล',
-    content: 'hello@queuequote.com',
+    content: 'marosdee.fuzana@gmail.com',
     isLink: true,
     subtitle: 'ตอบกลับภายใน 24 ชม.',
   },
   {
     icon: '💬',
-    title: 'LINE Official',
-    content: '@queuequote',
+    title: 'LINE',
+    content: 'marosdee7',
     contentClass: 'text-green-600 font-semibold',
     subtitle: 'แชทตอบเร็วที่สุด',
   },
   {
     icon: '📍',
     title: 'สำนักงาน',
-    content: '123 อาคาร ABC ชั้น 5',
-    subtitle: 'ถ.สุขุมวิท กรุงเทพฯ 10110',
+    content: 'ต.ลำภู',
+    subtitle: 'อ.เมือง นราธิวาส 96000',
   },
 ];
 
