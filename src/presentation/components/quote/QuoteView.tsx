@@ -352,7 +352,7 @@ export function QuoteView() {
             rows={3}
           />
           {notes && (
-            <p className="print-show whitespace-pre-wrap" style={{ display: 'none' }}>{notes}</p>
+            <p className="quote-notes-text hidden print:block whitespace-pre-wrap text-gray-700 mb-4">{notes}</p>
           )}
           <ul className="quote-terms">
             <li>ราคานี้มีผล 30 วันนับจากวันที่ออกใบเสนอราคา</li>

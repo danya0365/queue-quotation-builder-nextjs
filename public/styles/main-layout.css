@@ -1963,6 +1963,10 @@
   @apply pb-2 border-b border-gray-200 dark:border-gray-700;
 }
 
+.quote-customer {
+  @apply mb-8;
+}
+
 .quote-customer-form {
   @apply grid grid-cols-1 sm:grid-cols-3 gap-4;
 }
@@ -2721,19 +2725,36 @@
   }
 
   .quote-actions {
-    @apply mb-4;
+    @apply flex-col gap-2 mb-4;
+  }
+
+  .quote-actions a,
+  .quote-actions button {
+    @apply w-full justify-center text-sm;
   }
 
   .quote-document {
-    @apply p-4 rounded-xl;
+    @apply p-3 rounded-xl;
   }
 
   .quote-header {
-    @apply pb-4 mb-4;
+    @apply flex-col items-center gap-4 pb-4 mb-4;
+  }
+
+  .quote-company {
+    @apply text-center w-full;
   }
 
   .quote-company-name {
-    @apply text-xl;
+    @apply text-xl justify-center;
+  }
+
+  .quote-meta {
+    @apply text-center w-full;
+  }
+
+  .quote-meta-item {
+    @apply justify-center;
   }
 
   .quote-meta-label,
@@ -2761,13 +2782,37 @@
     @apply p-3 text-sm;
   }
 
+  /* Table horizontal scroll on mobile */
+  .quote-section:has(.quote-table) {
+    @apply overflow-x-auto -mx-3 px-3;
+  }
+
+  .quote-table {
+    @apply min-w-[500px];
+  }
+
   .quote-table th,
   .quote-table td {
     @apply px-2 py-2 text-xs;
   }
 
+  .quote-table th:nth-child(1),
+  .quote-table td:nth-child(1) {
+    @apply w-8;
+  }
+
+  .quote-table th:nth-child(3),
+  .quote-table td:nth-child(3) {
+    @apply w-16;
+  }
+
+  .quote-table th:nth-child(4),
+  .quote-table td:nth-child(4) {
+    @apply w-20;
+  }
+
   .quote-summary {
-    @apply p-4 mb-4;
+    @apply p-3 mb-4;
   }
 
   .quote-summary-row {
@@ -2778,6 +2823,17 @@
     @apply text-base px-3 py-2;
   }
 
+  .quote-footer {
+    @apply pt-4;
+  }
+
+  .quote-signature {
+    @apply grid-cols-1 gap-4;
+  }
+
+  .quote-signature-line {
+    @apply mt-8;
+  }
   .quote-terms {
     @apply text-xs;
   }
