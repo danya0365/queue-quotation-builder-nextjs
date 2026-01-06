@@ -629,6 +629,75 @@
   @apply mt-1;
 }
 
+/* Platform Selection */
+.builder-platforms {
+  @apply mb-8;
+}
+
+.builder-section-desc {
+  @apply text-sm text-gray-500 dark:text-gray-400;
+  @apply mb-4 -mt-2;
+}
+
+.builder-platform-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4;
+}
+
+.builder-platform-card {
+  @apply relative flex flex-col items-center;
+  @apply p-5 rounded-xl;
+  @apply bg-white dark:bg-gray-800;
+  @apply border-2 border-gray-200 dark:border-gray-700;
+  @apply transition-all duration-300;
+  @apply cursor-pointer;
+  @apply hover:border-purple-300 dark:hover:border-purple-600;
+  @apply hover:shadow-lg hover:-translate-y-1;
+}
+
+.builder-platform-card.selected {
+  @apply border-purple-500 dark:border-purple-400;
+  @apply bg-purple-50 dark:bg-purple-900/30;
+  @apply shadow-lg;
+}
+
+.builder-platform-checkbox {
+  @apply absolute top-3 right-3;
+  @apply w-6 h-6 rounded-full;
+  @apply border-2 border-gray-300 dark:border-gray-600;
+  @apply flex items-center justify-center;
+  @apply text-xs font-bold text-white;
+  @apply transition-all duration-200;
+}
+
+.builder-platform-card.selected .builder-platform-checkbox {
+  @apply bg-purple-500 border-purple-500;
+}
+
+.builder-platform-icon {
+  @apply text-4xl mb-2;
+}
+
+.builder-platform-name {
+  @apply font-semibold text-gray-900 dark:text-white;
+  @apply text-center;
+}
+
+.builder-platform-name-en {
+  @apply text-xs text-gray-500 dark:text-gray-400;
+  @apply mb-1;
+}
+
+.builder-platform-description {
+  @apply text-xs text-gray-500 dark:text-gray-400;
+  @apply text-center mb-2;
+  @apply line-clamp-2;
+}
+
+.builder-platform-price {
+  @apply text-sm font-semibold;
+  @apply text-purple-600 dark:text-purple-400;
+}
+
 /* Package Selection */
 .builder-packages {
   @apply mb-8;

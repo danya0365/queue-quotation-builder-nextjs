@@ -525,6 +525,80 @@ export const FEATURE_PACKAGES: FeaturePackage[] = [
 ];
 
 // ============================================
+// Platforms
+// ============================================
+
+export interface Platform {
+  id: string;
+  name: string;
+  nameEn: string;
+  icon: string;
+  description: string;
+  basePrice: number;
+  priceMultiplier: number; // Multiplier for feature prices
+}
+
+export const PLATFORMS: Platform[] = [
+  {
+    id: 'web',
+    name: 'Web App',
+    nameEn: 'Web Application',
+    icon: '💻',
+    description: 'ระบบ Web-based เข้าถึงผ่าน Browser ทุกอุปกรณ์',
+    basePrice: 0,
+    priceMultiplier: 1.0,
+  },
+  {
+    id: 'mobile',
+    name: 'Mobile App',
+    nameEn: 'Mobile Application',
+    icon: '📱',
+    description: 'แอปพลิเคชันสำหรับ iOS และ Android',
+    basePrice: 25000,
+    priceMultiplier: 1.3,
+  },
+  {
+    id: 'kiosk',
+    name: 'Kiosk',
+    nameEn: 'Kiosk Terminal',
+    icon: '🖥️',
+    description: 'ตู้ Kiosk สำหรับลูกค้ากดคิวเอง',
+    basePrice: 15000,
+    priceMultiplier: 1.2,
+  },
+  {
+    id: 'hardware',
+    name: 'Hardware + Web',
+    nameEn: 'Hardware Bundle',
+    icon: '⚙️',
+    description: 'ชุด Hardware (เครื่องพิมพ์ตั๋ว, จอแสดงผล) พร้อม Web Admin',
+    basePrice: 35000,
+    priceMultiplier: 1.5,
+  },
+];
+
+// Helper function for platforms
+export function getPlatformById(id: string): Platform | undefined {
+  return PLATFORMS.find((p) => p.id === id);
+}
+
+export function calculatePlatformPrice(selectedPlatforms: string[]): number {
+  return selectedPlatforms.reduce((total, platformId) => {
+    const platform = getPlatformById(platformId);
+    return total + (platform?.basePrice ?? 0);
+  }, 0);
+}
+
+export function getHighestPriceMultiplier(selectedPlatforms: string[]): number {
+  if (selectedPlatforms.length === 0) return 1.0;
+  
+  return selectedPlatforms.reduce((highest, platformId) => {
+    const platform = getPlatformById(platformId);
+    return Math.max(highest, platform?.priceMultiplier ?? 1.0);
+  }, 1.0);
+}
+
+// ============================================
 // Helper Functions
 // ============================================
 

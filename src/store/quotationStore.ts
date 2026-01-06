@@ -4,11 +4,14 @@
  */
 
 import {
+    calculatePlatformPrice,
     calculateTotalPrice,
     checkDependencies,
     getFeatureById,
+    getPlatformById,
     getProjectTypeById,
     type Feature,
+    type Platform,
 } from '@/src/data/mock/mockFeatures';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
@@ -16,6 +19,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 interface QuotationState {
   // State
   projectType: string | null;
+  selectedPlatforms: string[];
   selectedFeatures: string[];
   discountPercent: number;
   customerName: string;
@@ -25,9 +29,11 @@ interface QuotationState {
 
   // Computed
   getSubtotal: () => number;
+  getPlatformSubtotal: () => number;
   getDiscount: () => number;
   getTotal: () => number;
   getSelectedFeaturesData: () => Feature[];
+  getSelectedPlatformsData: () => Platform[];
 
   // Actions
   setProjectType: (id: string | null) => void;
@@ -35,6 +41,8 @@ interface QuotationState {
   selectFeatures: (ids: string[]) => void;
   clearFeatures: () => void;
   canSelectFeature: (id: string) => boolean;
+  togglePlatform: (id: string) => void;
+  clearPlatforms: () => void;
   setDiscountPercent: (percent: number) => void;
   setCustomerInfo: (info: { name?: string; phone?: string; email?: string }) => void;
   setNotes: (notes: string) => void;
@@ -43,6 +51,7 @@ interface QuotationState {
 
 const initialState = {
   projectType: null as string | null,
+  selectedPlatforms: [] as string[],
   selectedFeatures: [] as string[],
   discountPercent: 0,
   customerName: '',
@@ -60,8 +69,15 @@ export const useQuotationStore = create<QuotationState>()(
       // Computed
       // ============================================
       getSubtotal: () => {
-        const { projectType, selectedFeatures } = get();
-        return calculateTotalPrice(projectType, selectedFeatures);
+        const { projectType, selectedFeatures, selectedPlatforms } = get();
+        const featurePrice = calculateTotalPrice(projectType, selectedFeatures);
+        const platformPrice = calculatePlatformPrice(selectedPlatforms);
+        return featurePrice + platformPrice;
+      },
+
+      getPlatformSubtotal: () => {
+        const { selectedPlatforms } = get();
+        return calculatePlatformPrice(selectedPlatforms);
       },
 
       getDiscount: () => {
@@ -79,6 +95,13 @@ export const useQuotationStore = create<QuotationState>()(
         return selectedFeatures
           .map((id) => getFeatureById(id))
           .filter((f): f is Feature => f !== undefined);
+      },
+
+      getSelectedPlatformsData: () => {
+        const { selectedPlatforms } = get();
+        return selectedPlatforms
+          .map((id) => getPlatformById(id))
+          .filter((p): p is Platform => p !== undefined);
       },
 
       // ============================================
@@ -124,6 +147,20 @@ export const useQuotationStore = create<QuotationState>()(
         return checkDependencies(id, selectedFeatures);
       },
 
+      togglePlatform: (id) => {
+        const { selectedPlatforms } = get();
+        const isSelected = selectedPlatforms.includes(id);
+        if (isSelected) {
+          set({ selectedPlatforms: selectedPlatforms.filter((pId) => pId !== id) });
+        } else {
+          set({ selectedPlatforms: [...selectedPlatforms, id] });
+        }
+      },
+
+      clearPlatforms: () => {
+        set({ selectedPlatforms: [] });
+      },
+
       setDiscountPercent: (percent) => {
         set({ discountPercent: Math.max(0, Math.min(100, percent)) });
       },
@@ -149,6 +186,7 @@ export const useQuotationStore = create<QuotationState>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         projectType: state.projectType,
+        selectedPlatforms: state.selectedPlatforms,
         selectedFeatures: state.selectedFeatures,
         discountPercent: state.discountPercent,
         customerName: state.customerName,

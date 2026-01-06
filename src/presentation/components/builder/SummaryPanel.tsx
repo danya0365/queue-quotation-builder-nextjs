@@ -14,11 +14,14 @@ export function SummaryPanel() {
   const {
     projectType,
     selectedFeatures,
+    selectedPlatforms,
     discountPercent,
     getSubtotal,
+    getPlatformSubtotal,
     getDiscount,
     getTotal,
     getSelectedFeaturesData,
+    getSelectedPlatformsData,
     setDiscountPercent,
     reset,
   } = useQuotationStore();
@@ -27,8 +30,10 @@ export function SummaryPanel() {
   const [mobileExpanded, setMobileExpanded] = useState(false);
 
   const selectedFeaturesData = getSelectedFeaturesData();
+  const selectedPlatformsData = getSelectedPlatformsData();
   const projectTypeData = projectType ? getProjectTypeById(projectType) : null;
   const subtotal = getSubtotal();
+  const platformSubtotal = getPlatformSubtotal();
   const discount = getDiscount();
   const total = getTotal();
 
@@ -38,7 +43,7 @@ export function SummaryPanel() {
     : selectedFeaturesData.slice(0, 5);
   const hiddenCount = selectedFeaturesData.length - 5;
 
-  const hasItems = projectTypeData || selectedFeaturesData.length > 0;
+  const hasItems = projectTypeData || selectedPlatformsData.length > 0 || selectedFeaturesData.length > 0;
 
   return (
     <>
@@ -61,6 +66,18 @@ export function SummaryPanel() {
               </span>
             </div>
           )}
+
+          {/* Platforms */}
+          {selectedPlatformsData.map((platform) => (
+            <div key={platform.id} className="builder-summary-item">
+              <span className="builder-summary-item-name">
+                {platform.icon} {platform.name}
+              </span>
+              <span className="builder-summary-item-price">
+                {platform.basePrice === 0 ? '-' : `+${formatPrice(platform.basePrice)}`}
+              </span>
+            </div>
+          ))}
 
           {/* Features */}
           {visibleFeatures.map((feature) => (
@@ -87,7 +104,7 @@ export function SummaryPanel() {
           {/* Empty State */}
           {!hasItems && (
             <p className="builder-summary-empty">
-              กรุณาเลือกประเภทธุรกิจและฟีเจอร์
+              กรุณาเลือกประเภทธุรกิจ, Platform และฟีเจอร์
             </p>
           )}
         </div>
@@ -154,8 +171,13 @@ export function SummaryPanel() {
           </button>
         </div>
 
-        {/* Feature Count */}
-        <div className="mt-4 text-center">
+        {/* Summary Count */}
+        <div className="mt-4 text-center space-y-1">
+          {selectedPlatforms.length > 0 && (
+            <span className="block text-sm text-purple-600 dark:text-purple-400">
+              {selectedPlatforms.length} Platform
+            </span>
+          )}
           <span className="text-sm text-gray-500 dark:text-gray-400">
             เลือกแล้ว {selectedFeatures.length} ฟีเจอร์
           </span>
@@ -186,6 +208,12 @@ export function SummaryPanel() {
                   <span>{formatPrice(projectTypeData.basePrice)}</span>
                 </div>
               )}
+              {selectedPlatformsData.map((platform) => (
+                <div key={platform.id} className="mobile-summary-item">
+                  <span>{platform.icon} {platform.name}</span>
+                  <span>{platform.basePrice === 0 ? '-' : `+${formatPrice(platform.basePrice)}`}</span>
+                </div>
+              ))}
               {selectedFeaturesData.slice(0, 5).map((feature) => (
                 <div key={feature.id} className="mobile-summary-item">
                   <span className="truncate">{feature.name}</span>
@@ -243,7 +271,7 @@ export function SummaryPanel() {
         >
           <div className="mobile-summary-info">
             <span className="mobile-summary-count">
-              {selectedFeatures.length} ฟีเจอร์
+              {selectedPlatforms.length > 0 && `${selectedPlatforms.length} Platform, `}{selectedFeatures.length} ฟีเจอร์
             </span>
             <span className="mobile-summary-price">
               {formatPrice(total)}

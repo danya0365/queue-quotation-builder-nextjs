@@ -13,11 +13,13 @@ export function BuilderView() {
   const {
     // Constants
     PROJECT_TYPES,
+    PLATFORMS,
     FEATURE_CATEGORIES,
 
     // State
     projectType,
     selectedFeatures,
+    selectedPlatforms,
     activeCategory,
     showCustomize,
 
@@ -33,6 +35,7 @@ export function BuilderView() {
     handleBackToPackages,
     setActiveCategory,
     toggleFeature,
+    togglePlatform,
     canSelectFeature,
 
     // Helpers
@@ -63,7 +66,17 @@ export function BuilderView() {
             formatPrice={formatPrice}
           />
 
-          {/* Step 2: Package Selection (shown after selecting project type) */}
+          {/* Step 2: Platform Selection (shown after selecting project type) */}
+          {projectType && (
+            <PlatformSection
+              platforms={PLATFORMS}
+              selectedPlatforms={selectedPlatforms}
+              onToggle={togglePlatform}
+              formatPrice={formatPrice}
+            />
+          )}
+
+          {/* Step 3: Package Selection (shown after selecting project type) */}
           {projectType && !showCustomize && (
             <PackageSection
               packages={availablePackages}
@@ -75,7 +88,7 @@ export function BuilderView() {
             />
           )}
 
-          {/* Step 3: Feature Customization */}
+          {/* Step 4: Feature Customization */}
           {projectType && showCustomize && (
             <>
               {/* Back to Packages */}
@@ -175,6 +188,48 @@ function ProjectTypeSection({
   );
 }
 
+interface PlatformSectionProps {
+  platforms: Platform[];
+  selectedPlatforms: string[];
+  onToggle: (id: string) => void;
+  formatPrice: (price: number) => string;
+}
+
+function PlatformSection({
+  platforms,
+  selectedPlatforms,
+  onToggle,
+  formatPrice,
+}: PlatformSectionProps) {
+  return (
+    <div className="builder-platforms">
+      <h2 className="builder-section-title">2. เลือก Platform</h2>
+      <p className="builder-section-desc">เลือกแพลตฟอร์มที่ต้องการ (เลือกได้หลายรายการ)</p>
+      <div className="builder-platform-grid">
+        {platforms.map((platform) => {
+          const isSelected = selectedPlatforms.includes(platform.id);
+          return (
+            <button
+              key={platform.id}
+              onClick={() => onToggle(platform.id)}
+              className={`builder-platform-card ${isSelected ? 'selected' : ''}`}
+            >
+              <div className="builder-platform-checkbox">{isSelected && '✓'}</div>
+              <span className="builder-platform-icon">{platform.icon}</span>
+              <span className="builder-platform-name">{platform.name}</span>
+              <span className="builder-platform-name-en">{platform.nameEn}</span>
+              <span className="builder-platform-description">{platform.description}</span>
+              <span className="builder-platform-price">
+                {platform.basePrice === 0 ? 'รวมในราคา' : `+${formatPrice(platform.basePrice)}`}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 interface PackageSectionProps {
   packages: FeaturePackage[];
   projectType: string;
@@ -193,7 +248,7 @@ function PackageSection({
 }: PackageSectionProps) {
   return (
     <div className="builder-packages">
-      <h2 className="builder-section-title">2. เลือกแพ็กเกจ</h2>
+      <h2 className="builder-section-title">3. เลือกแพ็กเกจ</h2>
       <div className="builder-package-grid">
         {packages.map((pkg) => {
           const price = getPackagePrice(pkg);

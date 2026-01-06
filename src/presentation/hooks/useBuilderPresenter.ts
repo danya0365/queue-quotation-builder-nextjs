@@ -1,16 +1,17 @@
 'use client';
 
 import {
-    calculatePackagePrice,
-    FEATURE_CATEGORIES,
-    FEATURES,
-    formatPrice,
-    getFeaturesByCategory,
-    getMissingDependencies,
-    getPackagesForProjectType,
-    PROJECT_TYPES,
-    type Feature,
-    type FeaturePackage,
+  calculatePackagePrice,
+  FEATURE_CATEGORIES,
+  FEATURES,
+  formatPrice,
+  getFeaturesByCategory,
+  getMissingDependencies,
+  getPackagesForProjectType,
+  PLATFORMS,
+  PROJECT_TYPES,
+  type Feature,
+  type FeaturePackage,
 } from '@/src/data/mock/mockFeatures';
 import { useQuotationStore } from '@/src/store/quotationStore';
 import { useCallback, useMemo, useState } from 'react';
@@ -25,8 +26,10 @@ export function useBuilderPresenter() {
   const {
     projectType,
     selectedFeatures,
+    selectedPlatforms,
     setProjectType,
     toggleFeature,
+    togglePlatform,
     canSelectFeature,
     selectFeatures,
     setDiscountPercent,
@@ -131,11 +134,13 @@ export function useBuilderPresenter() {
   return {
     // Constants
     PROJECT_TYPES,
+    PLATFORMS,
     FEATURE_CATEGORIES,
 
     // State
     projectType,
     selectedFeatures,
+    selectedPlatforms,
     activeCategory,
     showCustomize,
 
@@ -152,6 +157,7 @@ export function useBuilderPresenter() {
     handleBackToPackages,
     setActiveCategory,
     toggleFeature,
+    togglePlatform,
     canSelectFeature,
 
     // Helpers
