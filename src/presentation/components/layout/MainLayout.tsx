@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
+import { CookieConsent } from '../common/CookieConsent';
 import { CrystalBubble } from '../common/CrystalBubble';
 import { MainFooter } from './MainFooter';
 import { MainHeader } from './MainHeader';
@@ -34,6 +35,9 @@ export function MainLayout({ children, showBubbles = true }: MainLayoutProps) {
 
       {/* Footer */}
       <MainFooter />
+
+      {/* PDPA Cookie Consent Banner */}
+      <CookieConsent />
     </div>
   );
 }

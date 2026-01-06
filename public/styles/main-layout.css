@@ -2445,6 +2445,84 @@
 }
 
 /* ============================================
+   Cookie Consent Banner (PDPA)
+   ============================================ */
+.cookie-consent {
+  @apply fixed bottom-0 left-0 right-0 z-[100];
+  @apply bg-white dark:bg-gray-900;
+  @apply border-t border-gray-200 dark:border-gray-700;
+  @apply shadow-2xl;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.cookie-consent-content {
+  @apply max-w-6xl mx-auto;
+  @apply p-4 sm:p-6;
+  @apply flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4;
+}
+
+.cookie-consent-text {
+  @apply flex items-start gap-3;
+  @apply flex-1;
+}
+
+.cookie-consent-icon {
+  @apply text-3xl sm:text-4xl;
+  @apply flex-shrink-0;
+}
+
+.cookie-consent-title {
+  @apply font-bold text-gray-900 dark:text-white;
+  @apply mb-1;
+}
+
+.cookie-consent-description {
+  @apply text-sm text-gray-600 dark:text-gray-400;
+  @apply leading-relaxed;
+}
+
+.cookie-consent-link {
+  @apply text-indigo-600 dark:text-indigo-400;
+  @apply hover:underline;
+}
+
+.cookie-consent-actions {
+  @apply flex gap-3;
+  @apply w-full sm:w-auto;
+}
+
+.cookie-consent-btn {
+  @apply flex-1 sm:flex-none;
+  @apply px-5 py-2.5 rounded-lg;
+  @apply text-sm font-semibold;
+  @apply transition-all duration-200;
+  @apply cursor-pointer;
+}
+
+.cookie-consent-btn.decline {
+  @apply bg-gray-100 dark:bg-gray-800;
+  @apply text-gray-700 dark:text-gray-300;
+  @apply hover:bg-gray-200 dark:hover:bg-gray-700;
+  @apply border border-gray-300 dark:border-gray-600;
+}
+
+.cookie-consent-btn.accept {
+  @apply bg-indigo-600 text-white;
+  @apply hover:bg-indigo-700;
+}
+
+/* ============================================
    Mobile Responsive Styles
    ============================================ */
 @media (max-width: 640px) {
