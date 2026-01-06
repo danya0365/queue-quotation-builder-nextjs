@@ -2320,6 +2320,131 @@
 }
 
 /* ============================================
+   Legal Pages (Privacy, Terms)
+   ============================================ */
+.legal-page {
+  @apply py-8 px-4 sm:px-6 lg:px-8;
+  @apply max-w-3xl mx-auto;
+}
+
+.legal-title {
+  @apply text-3xl sm:text-4xl font-bold;
+  @apply text-gray-900 dark:text-white;
+  @apply mb-2;
+}
+
+.legal-updated {
+  @apply text-sm text-gray-500 dark:text-gray-400;
+  @apply mb-8;
+}
+
+.legal-section {
+  @apply mb-8;
+}
+
+.legal-section h2 {
+  @apply text-xl font-semibold;
+  @apply text-gray-900 dark:text-white;
+  @apply mb-3;
+}
+
+.legal-section p {
+  @apply text-gray-600 dark:text-gray-400;
+  @apply mb-3 leading-relaxed;
+}
+
+.legal-section ul {
+  @apply list-disc list-inside;
+  @apply text-gray-600 dark:text-gray-400;
+  @apply space-y-2 ml-4;
+}
+
+.legal-back {
+  @apply mt-12 pt-8;
+  @apply border-t border-gray-200 dark:border-gray-700;
+}
+
+/* ============================================
+   Contact Page
+   ============================================ */
+.contact-page {
+  @apply py-8 px-4 sm:px-6 lg:px-8;
+  @apply max-w-5xl mx-auto;
+}
+
+.contact-title {
+  @apply text-3xl sm:text-4xl font-bold;
+  @apply text-gray-900 dark:text-white;
+  @apply text-center mb-2;
+}
+
+.contact-subtitle {
+  @apply text-lg text-gray-600 dark:text-gray-400;
+  @apply text-center mb-10;
+}
+
+.contact-grid {
+  @apply grid grid-cols-1 lg:grid-cols-2 gap-8;
+}
+
+.contact-info {
+  @apply grid grid-cols-1 sm:grid-cols-2 gap-4;
+}
+
+.contact-card {
+  @apply p-6 rounded-xl;
+  @apply bg-white dark:bg-gray-800;
+  @apply border border-gray-200 dark:border-gray-700;
+  @apply text-center;
+}
+
+.contact-icon {
+  @apply text-4xl mb-3 block;
+}
+
+.contact-card h3 {
+  @apply font-semibold text-gray-900 dark:text-white;
+  @apply mb-2;
+}
+
+.contact-card p {
+  @apply text-gray-600 dark:text-gray-400;
+}
+
+.contact-form-container {
+  @apply p-6 rounded-xl;
+  @apply bg-white dark:bg-gray-800;
+  @apply border border-gray-200 dark:border-gray-700;
+}
+
+.contact-form {
+  @apply space-y-4;
+}
+
+.form-group {
+  @apply space-y-1;
+}
+
+.form-group label {
+  @apply block text-sm font-medium;
+  @apply text-gray-700 dark:text-gray-300;
+}
+
+.form-input {
+  @apply w-full px-4 py-3 rounded-lg;
+  @apply bg-gray-50 dark:bg-gray-700;
+  @apply border border-gray-300 dark:border-gray-600;
+  @apply text-gray-900 dark:text-white;
+  @apply placeholder-gray-400 dark:placeholder-gray-500;
+  @apply focus:outline-none focus:ring-2 focus:ring-indigo-500;
+  @apply transition-all duration-200;
+}
+
+.contact-back {
+  @apply mt-12 text-center;
+}
+
+/* ============================================
    Mobile Responsive Styles
    ============================================ */
 @media (max-width: 640px) {
