@@ -2218,3 +2218,402 @@
   @apply bg-indigo-700 text-white;
   @apply hover:bg-indigo-800;
 }
+
+/* ============================================
+   Mobile Responsive Styles
+   ============================================ */
+@media (max-width: 640px) {
+  /* Builder Page - Mobile */
+  .builder-page {
+    @apply py-3 px-2;
+  }
+
+  .builder-container {
+    @apply gap-4;
+  }
+
+  .builder-header {
+    @apply mb-4;
+  }
+
+  .builder-title {
+    @apply text-2xl mb-1;
+  }
+
+  .builder-subtitle {
+    @apply text-sm;
+  }
+
+  .builder-section-title {
+    @apply text-base mb-3;
+  }
+
+  /* Project Types - Mobile */
+  .builder-project-types {
+    @apply mb-4;
+  }
+
+  .builder-project-grid {
+    @apply grid-cols-2 gap-2;
+  }
+
+  .builder-project-card {
+    @apply p-3;
+  }
+
+  .builder-project-icon {
+    @apply text-2xl mb-1;
+  }
+
+  .builder-project-name {
+    @apply text-xs;
+  }
+
+  .builder-project-price {
+    @apply text-xs;
+  }
+
+  /* Package Cards - Mobile */
+  .builder-packages {
+    @apply mb-4;
+  }
+
+  .builder-package-grid {
+    @apply grid-cols-2 gap-2;
+  }
+
+  .builder-package-card {
+    @apply p-3 rounded-xl;
+  }
+
+  .builder-package-discount {
+    @apply -top-2 -right-2 px-2 text-xs;
+  }
+
+  .builder-package-icon {
+    @apply text-2xl mb-1;
+  }
+
+  .builder-package-name {
+    @apply text-sm;
+  }
+
+  .builder-package-name-en {
+    @apply text-xs mb-1;
+  }
+
+  .builder-package-description {
+    @apply text-xs mb-2;
+  }
+
+  .builder-package-price {
+    @apply text-base;
+  }
+
+  /* Category Filter - Mobile */
+  .builder-category-filter {
+    @apply gap-1 mb-4 pb-3;
+  }
+
+  .builder-category-btn {
+    @apply px-2 py-1.5 text-xs;
+  }
+
+  /* Feature Cards - Mobile */
+  .builder-features {
+    @apply space-y-4;
+  }
+
+  .builder-category-group {
+    @apply mb-4;
+  }
+
+  .builder-category-title {
+    @apply text-sm mb-2;
+  }
+
+  .builder-features-grid {
+    @apply grid-cols-1 gap-2;
+  }
+
+  .builder-feature-card {
+    @apply p-3 rounded-lg;
+  }
+
+  .builder-feature-popular,
+  .builder-feature-recommended {
+    @apply text-xs px-1.5 py-0.5;
+  }
+
+  .builder-feature-checkbox {
+    @apply w-5 h-5 text-xs;
+  }
+
+  .builder-feature-name {
+    @apply text-sm;
+  }
+
+  .builder-feature-description {
+    @apply text-xs mb-2;
+  }
+
+  .builder-feature-level {
+    @apply text-xs px-1.5;
+  }
+
+  .builder-feature-price {
+    @apply text-sm;
+  }
+
+  .builder-feature-deps {
+    @apply text-xs mt-1;
+  }
+
+  /* Summary Panel - Mobile */
+  .builder-summary {
+    @apply p-4 rounded-xl;
+  }
+
+  .builder-summary-title {
+    @apply text-base mb-3;
+  }
+
+  .builder-summary-item {
+    @apply py-1.5 px-2 rounded;
+  }
+
+  .builder-summary-item-name,
+  .builder-summary-item-price {
+    @apply text-xs;
+  }
+
+  .builder-summary-row {
+    @apply text-xs py-0.5;
+  }
+
+  .builder-summary-row.total {
+    @apply text-base py-1;
+  }
+
+  /* Quote Page - Mobile */
+  .quote-page {
+    @apply py-3 px-2;
+  }
+
+  .quote-actions {
+    @apply mb-4;
+  }
+
+  .quote-document {
+    @apply p-4 rounded-xl;
+  }
+
+  .quote-header {
+    @apply pb-4 mb-4;
+  }
+
+  .quote-company-name {
+    @apply text-xl;
+  }
+
+  .quote-meta-label,
+  .quote-meta-value {
+    @apply text-xs;
+  }
+
+  .quote-section {
+    @apply mb-4;
+  }
+
+  .quote-section-title {
+    @apply text-sm mb-2 pb-1;
+  }
+
+  .quote-customer-form {
+    @apply grid-cols-1 gap-2;
+  }
+
+  .quote-input {
+    @apply px-3 py-2 text-sm rounded-lg;
+  }
+
+  .quote-project-type {
+    @apply p-3 text-sm;
+  }
+
+  .quote-table th,
+  .quote-table td {
+    @apply px-2 py-2 text-xs;
+  }
+
+  .quote-summary {
+    @apply p-4 mb-4;
+  }
+
+  .quote-summary-row {
+    @apply text-sm;
+  }
+
+  .quote-summary-row.grand-total {
+    @apply text-base px-3 py-2;
+  }
+
+  .quote-terms {
+    @apply text-xs;
+  }
+
+  .quote-footer {
+    @apply pt-4;
+  }
+
+  .quote-signature-line {
+    @apply mt-10;
+  }
+
+  /* About Page - Mobile */
+  .about-page {
+    @apply py-4 px-2;
+  }
+
+  .about-hero {
+    @apply py-8;
+  }
+
+  .about-hero-title {
+    @apply text-2xl mb-3;
+  }
+
+  .about-hero-subtitle {
+    @apply text-sm;
+  }
+
+  .about-stats {
+    @apply p-4 gap-4 mb-6;
+  }
+
+  .about-stat-value {
+    @apply text-xl;
+  }
+
+  .about-stat-label {
+    @apply text-xs;
+  }
+
+  .about-section {
+    @apply py-6;
+  }
+
+  .about-section-title {
+    @apply text-xl mb-6;
+  }
+
+  .about-card {
+    @apply p-4;
+  }
+
+  .about-card-icon {
+    @apply text-3xl mb-2;
+  }
+
+  .about-card-title {
+    @apply text-base mb-2;
+  }
+
+  .about-card-text {
+    @apply text-sm;
+  }
+
+  .about-features-grid {
+    @apply grid-cols-2 gap-3;
+  }
+
+  .about-feature {
+    @apply p-3;
+  }
+
+  .about-feature-icon {
+    @apply text-2xl mb-2;
+  }
+
+  .about-feature-title {
+    @apply text-xs;
+  }
+
+  .about-feature-text {
+    @apply text-xs;
+  }
+
+  .about-team-grid {
+    @apply grid-cols-2 gap-3;
+  }
+
+  .about-team-member {
+    @apply p-4;
+  }
+
+  .about-team-avatar {
+    @apply text-3xl mb-2;
+  }
+
+  .about-team-name {
+    @apply text-sm;
+  }
+
+  .about-cta {
+    @apply py-8 px-4;
+  }
+
+  .about-cta-title {
+    @apply text-xl mb-2;
+  }
+
+  .about-cta-subtitle {
+    @apply text-sm mb-4;
+  }
+
+  .about-cta-btn {
+    @apply px-4 py-2 text-sm;
+  }
+
+  /* Landing Page - Mobile */
+  .landing-hero {
+    @apply min-h-[calc(100vh-6rem)];
+  }
+
+  .landing-title {
+    @apply text-3xl mb-4;
+  }
+
+  .landing-subtitle {
+    @apply text-base mb-6;
+  }
+
+  .landing-btn-primary,
+  .landing-btn-secondary {
+    @apply px-6 py-3 text-sm;
+  }
+
+  .landing-features {
+    @apply py-10;
+  }
+
+  .landing-features-title {
+    @apply text-2xl mb-3;
+  }
+
+  .landing-features-grid {
+    @apply gap-4;
+  }
+
+  .landing-feature-card {
+    @apply p-4;
+  }
+
+  .landing-cta {
+    @apply py-10;
+  }
+
+  .landing-cta-title {
+    @apply text-xl mb-3;
+  }
+}
