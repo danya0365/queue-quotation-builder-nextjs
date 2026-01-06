@@ -18,7 +18,7 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <button className="main-icon-button" aria-label="Toggle theme">
+      <button className="theme-toggle-btn" aria-label="Toggle theme">
         <span className="text-lg">🌙</span>
       </button>
     );
@@ -29,7 +29,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
-      className="main-icon-button"
+      className="theme-toggle-btn"
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       title={isDark ? 'สลับเป็นโหมดสว่าง' : 'สลับเป็น Dark Mode'}
     >

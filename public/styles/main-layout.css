@@ -80,6 +80,23 @@
   @apply cursor-pointer;
 }
 
+/* Hide hamburger menu button on tablet and desktop */
+@media (min-width: 768px) {
+  .main-icon-button {
+    display: none !important;
+  }
+}
+
+/* Theme toggle button - always visible */
+.theme-toggle-btn {
+  @apply w-10 h-10 flex items-center justify-center;
+  @apply rounded-lg text-lg;
+  @apply text-gray-600 dark:text-gray-300;
+  @apply hover:bg-gray-100 dark:hover:bg-gray-800;
+  @apply transition-all duration-200;
+  @apply cursor-pointer;
+}
+
 .main-button-outline {
   @apply px-4 py-2 rounded-lg;
   @apply text-sm font-medium;

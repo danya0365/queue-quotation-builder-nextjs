@@ -31,7 +31,7 @@ export function MainHeader() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="main-nav hidden md:flex">
+        <nav className="main-nav hidden lg:flex">
           <Link
             href="/"
             className={`main-nav-link ${isActive('/') ? 'main-nav-link-active' : ''}`}
@@ -58,13 +58,13 @@ export function MainHeader() {
         {/* Actions */}
         <div className="main-header-actions">
           <ThemeToggle />
-          <Link href="/builder" className="main-button-primary hidden sm:flex">
+          <Link href="/builder" className="main-button-primary hidden lg:flex">
             เริ่มต้นใช้งาน
           </Link>
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Button - hidden on lg and up */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden main-icon-button"
+            className="lg:hidden main-icon-button"
             aria-label="Menu"
           >
             {mobileMenuOpen ? '✕' : '☰'}
@@ -74,7 +74,7 @@ export function MainHeader() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="main-mobile-menu md:hidden">
+        <div className="main-mobile-menu lg:hidden">
           <Link
             href="/"
             onClick={() => setMobileMenuOpen(false)}
