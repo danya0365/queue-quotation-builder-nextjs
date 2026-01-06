@@ -2,14 +2,16 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 import { ThemeToggle } from '../common/ThemeToggle';
 
 /**
  * MainHeader Component
- * Header with logo, navigation, and theme toggle
+ * Mobile-friendly header with hamburger menu
  */
 export function MainHeader() {
   const pathname = usePathname();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Helper to check active link
   const isActive = (href: string) => {
@@ -28,8 +30,8 @@ export function MainHeader() {
           <span className="main-logo-text">Queue Quote</span>
         </Link>
 
-        {/* Navigation */}
-        <nav className="main-nav">
+        {/* Desktop Navigation */}
+        <nav className="main-nav hidden md:flex">
           <Link
             href="/"
             className={`main-nav-link ${isActive('/') ? 'main-nav-link-active' : ''}`}
@@ -56,11 +58,46 @@ export function MainHeader() {
         {/* Actions */}
         <div className="main-header-actions">
           <ThemeToggle />
-          <Link href="/builder" className="main-button-primary">
+          <Link href="/builder" className="main-button-primary hidden sm:flex">
             เริ่มต้นใช้งาน
           </Link>
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden main-icon-button"
+            aria-label="Menu"
+          >
+            {mobileMenuOpen ? '✕' : '☰'}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="main-mobile-menu md:hidden">
+          <Link
+            href="/"
+            onClick={() => setMobileMenuOpen(false)}
+            className={`main-mobile-link ${isActive('/') ? 'active' : ''}`}
+          >
+            🏠 หน้าแรก
+          </Link>
+          <Link
+            href="/builder"
+            onClick={() => setMobileMenuOpen(false)}
+            className={`main-mobile-link ${isActive('/builder') ? 'active' : ''}`}
+          >
+            🛠️ สร้างใบเสนอราคา
+          </Link>
+          <Link
+            href="/about"
+            onClick={() => setMobileMenuOpen(false)}
+            className={`main-mobile-link ${isActive('/about') ? 'active' : ''}`}
+          >
+            ℹ️ เกี่ยวกับเรา
+          </Link>
+        </div>
+      )}
     </header>
   );
 }

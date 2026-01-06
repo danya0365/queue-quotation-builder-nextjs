@@ -108,11 +108,13 @@
 
 .main-footer-container {
   @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-  @apply flex items-center justify-between h-14;
+  @apply flex flex-col sm:flex-row items-center justify-between;
+  @apply py-3 sm:h-14 gap-2 sm:gap-0;
 }
 
 .main-footer-brand {
-  @apply flex items-center gap-4;
+  @apply flex flex-col sm:flex-row items-center gap-1 sm:gap-4;
+  @apply text-center sm:text-left;
 }
 
 .main-footer-logo {
@@ -120,17 +122,38 @@
 }
 
 .main-footer-copyright {
-  @apply text-sm text-gray-500 dark:text-gray-400;
+  @apply text-xs sm:text-sm text-gray-500 dark:text-gray-400;
 }
 
 .main-footer-nav {
-  @apply flex items-center gap-4;
+  @apply flex items-center gap-3 sm:gap-4;
 }
 
 .main-footer-link {
-  @apply text-sm text-gray-500 dark:text-gray-400;
+  @apply text-xs sm:text-sm text-gray-500 dark:text-gray-400;
   @apply hover:text-gray-900 dark:hover:text-white;
   @apply transition-colors duration-200;
+}
+
+/* ============================================
+   Mobile Menu
+   ============================================ */
+.main-mobile-menu {
+  @apply border-t border-gray-200 dark:border-gray-700;
+  @apply bg-white dark:bg-gray-900;
+  @apply px-4 py-2;
+}
+
+.main-mobile-link {
+  @apply block py-3 px-4 rounded-lg;
+  @apply text-gray-700 dark:text-gray-300;
+  @apply hover:bg-gray-100 dark:hover:bg-gray-800;
+  @apply transition-colors duration-200;
+}
+
+.main-mobile-link.active {
+  @apply bg-indigo-50 dark:bg-indigo-900/30;
+  @apply text-indigo-600 dark:text-indigo-400;
 }
 
 /* ============================================

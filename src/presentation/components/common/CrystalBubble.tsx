@@ -17,7 +17,15 @@ interface CrystalBubbleProps {
   count?: number;
 }
 
-const BUBBLE_COLORS = [
+const BUBBLE_COLORS_LIGHT = [
+  'rgba(99, 102, 241, 0.35)',  // indigo - more visible
+  'rgba(139, 92, 246, 0.35)',  // purple
+  'rgba(236, 72, 153, 0.3)',   // pink
+  'rgba(59, 130, 246, 0.3)',   // blue
+  'rgba(16, 185, 129, 0.25)',  // emerald
+];
+
+const BUBBLE_COLORS_DARK = [
   'rgba(99, 102, 241, 0.2)',
   'rgba(139, 92, 246, 0.2)',
   'rgba(236, 72, 153, 0.15)',
@@ -30,19 +38,33 @@ export function CrystalBubble({ count = 10 }: CrystalBubbleProps) {
   const animationRef = useRef<number>(0);
   const bubblesRef = useRef<Bubble[]>([]);
   const [, forceUpdate] = useState(0);
+  const [isDark, setIsDark] = useState(false);
+
+  // Detect dark mode
+  useEffect(() => {
+    const checkDark = () => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    };
+    checkDark();
+    const observer = new MutationObserver(checkDark);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
+
+  const BUBBLE_COLORS = isDark ? BUBBLE_COLORS_DARK : BUBBLE_COLORS_LIGHT;
 
   const initialBubbles = useMemo<Bubble[]>(() => {
     return Array.from({ length: count }, (_, i) => ({
       id: i,
-      size: Math.random() * 80 + 60,
+      size: Math.random() * 100 + 80, // Bigger bubbles
       x: Math.random() * 80 + 10,
       y: Math.random() * 80 + 10,
-      vx: (Math.random() - 0.5) * 0.04, // Much slower
+      vx: (Math.random() - 0.5) * 0.04,
       vy: (Math.random() - 0.5) * 0.04,
       color: BUBBLE_COLORS[Math.floor(Math.random() * BUBBLE_COLORS.length)],
-      opacity: Math.random() * 0.3 + 0.5,
+      opacity: Math.random() * 0.4 + 0.6, // Higher opacity
     }));
-  }, [count]);
+  }, [count, BUBBLE_COLORS]);
 
   useEffect(() => {
     bubblesRef.current = [...initialBubbles];
