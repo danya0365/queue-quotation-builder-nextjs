@@ -2,6 +2,8 @@
 
 import { getCategoryById } from '@/src/data/mock/mockFeatures';
 import { useQuotePresenter } from '@/src/presentation/hooks/useQuotePresenter';
+import { Fragment } from 'react';
+
 
 /**
  * QuoteView Component
@@ -315,8 +317,8 @@ function FeaturesTable({ projectTypeData, groupedFeatures, formatPrice }: Featur
 
           {/* Features by category */}
           {Object.entries(groupedFeatures).map(([categoryName, features]) => (
-            <>
-              <tr key={`cat-${categoryName}`} className="bg-gray-50 dark:bg-gray-700/30 print:bg-gray-100">
+            <Fragment key={categoryName}>
+              <tr className="bg-gray-50 dark:bg-gray-700/30 print:bg-gray-100">
                 <td colSpan={4} className="font-semibold text-gray-700 dark:text-gray-300 print:text-gray-700">
                   {categoryName}
                 </td>
@@ -338,7 +340,7 @@ function FeaturesTable({ projectTypeData, groupedFeatures, formatPrice }: Featur
                   </td>
                 </tr>
               ))}
-            </>
+            </Fragment>
           ))}
         </tbody>
       </table>
