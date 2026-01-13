@@ -34,6 +34,7 @@ export function ReceiptView() {
     total,
     vat,
     grandTotal,
+    vatOption,
 
     // Customer data
     customerName,
@@ -145,6 +146,7 @@ export function ReceiptView() {
           total={total}
           vat={vat}
           grandTotal={grandTotal}
+          vatOption={vatOption}
           formatPrice={formatPrice}
         />
 
@@ -416,6 +418,7 @@ interface ReceiptSummaryProps {
   total: number;
   vat: number;
   grandTotal: number;
+  vatOption: 'include' | 'exclude' | 'exempt';
   formatPrice: (price: number) => string;
 }
 
@@ -426,6 +429,7 @@ function ReceiptSummary({
   total,
   vat,
   grandTotal,
+  vatOption,
   formatPrice,
 }: ReceiptSummaryProps) {
   return (
@@ -436,20 +440,26 @@ function ReceiptSummary({
       </div>
       {discount > 0 && (
         <div className="receipt-summary-row text-green-600">
-          <span>ส่วนลด ({discountPercent}%)</span>
+          <span>ส่วนลด {discountPercent > 0 ? `(${discountPercent}%)` : ''}</span>
           <span className="font-mono">-{formatPrice(discount)}</span>
         </div>
       )}
       <div className="receipt-summary-row total">
-        <span>ราคาสุทธิ (ก่อน VAT)</span>
+        <span>ราคาสุทธิ {vatOption === 'include' ? '(ก่อน VAT)' : ''}</span>
         <span className="font-mono">{formatPrice(total)}</span>
       </div>
-      <div className="receipt-summary-row">
-        <span>VAT 7%</span>
-        <span className="font-mono">{formatPrice(vat)}</span>
-      </div>
+      {vatOption === 'include' && (
+        <div className="receipt-summary-row">
+          <span>VAT 7%</span>
+          <span className="font-mono">{formatPrice(vat)}</span>
+        </div>
+      )}
       <div className="receipt-summary-row grand-total paid">
-        <span>💰 ยอดที่ชำระแล้ว</span>
+        <span>
+          💰 {vatOption === 'include' && 'ยอดที่ชำระแล้ว'}
+          {vatOption === 'exclude' && 'ยอดที่ชำระแล้ว (ไม่รวม VAT)'}
+          {vatOption === 'exempt' && 'ยอดที่ชำระแล้ว (ไม่คิด VAT)'}
+        </span>
         <span className="font-mono text-green-600 print:text-green-700">
           {formatPrice(grandTotal)}
         </span>

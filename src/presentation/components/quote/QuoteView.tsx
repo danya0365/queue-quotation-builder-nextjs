@@ -36,6 +36,7 @@ export function QuoteView() {
     total,
     vat,
     grandTotal,
+    vatOption,
 
     // Customer data
     customerName,
@@ -138,6 +139,7 @@ export function QuoteView() {
           total={total}
           vat={vat}
           grandTotal={grandTotal}
+          vatOption={vatOption}
           formatPrice={formatPrice}
         />
 
@@ -358,6 +360,7 @@ interface QuoteSummaryProps {
   total: number;
   vat: number;
   grandTotal: number;
+  vatOption: 'include' | 'exclude' | 'exempt';
   formatPrice: (price: number) => string;
 }
 
@@ -368,6 +371,7 @@ function QuoteSummary({
   total,
   vat,
   grandTotal,
+  vatOption,
   formatPrice,
 }: QuoteSummaryProps) {
   return (
@@ -378,20 +382,26 @@ function QuoteSummary({
       </div>
       {discount > 0 && (
         <div className="quote-summary-row text-green-600">
-          <span>ส่วนลด ({discountPercent}%)</span>
+          <span>ส่วนลด {discountPercent > 0 ? `(${discountPercent}%)` : ''}</span>
           <span className="font-mono">-{formatPrice(discount)}</span>
         </div>
       )}
       <div className="quote-summary-row total">
-        <span>ราคาสุทธิ (ก่อน VAT)</span>
+        <span>ราคาสุทธิ {vatOption === 'include' ? '(ก่อน VAT)' : ''}</span>
         <span className="font-mono">{formatPrice(total)}</span>
       </div>
-      <div className="quote-summary-row">
-        <span>VAT 7%</span>
-        <span className="font-mono">{formatPrice(vat)}</span>
-      </div>
+      {vatOption === 'include' && (
+        <div className="quote-summary-row">
+          <span>VAT 7%</span>
+          <span className="font-mono">{formatPrice(vat)}</span>
+        </div>
+      )}
       <div className="quote-summary-row grand-total">
-        <span>ยอดรวมทั้งสิ้น</span>
+        <span>
+          {vatOption === 'include' && 'ยอดรวมทั้งสิ้น'}
+          {vatOption === 'exclude' && 'ราคาสุทธิ (ไม่รวม VAT)'}
+          {vatOption === 'exempt' && 'ราคาสุทธิ (ไม่คิด VAT)'}
+        </span>
         <span className="font-mono text-indigo-600 print:text-indigo-600">
           {formatPrice(grandTotal)}
         </span>

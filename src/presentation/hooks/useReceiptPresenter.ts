@@ -1,9 +1,9 @@
 'use client';
 
 import {
-    formatPrice,
-    getProjectTypeById,
-    type Feature,
+  formatPrice,
+  getProjectTypeById,
+  type Feature,
 } from '@/src/data/mock/mockFeatures';
 import { useQuotationStore } from '@/src/store/quotationStore';
 import { useCallback, useMemo, useRef, useState } from 'react';
@@ -20,6 +20,7 @@ export function useReceiptPresenter() {
     projectType,
     selectedFeatures,
     discountPercent,
+    vatOption,
     customerName,
     customerPhone,
     customerEmail,
@@ -55,8 +56,9 @@ export function useReceiptPresenter() {
   const subtotal = getSubtotal();
   const discount = getDiscount();
   const total = getTotal();
-  const vat = Math.round(total * 0.07);
-  const grandTotal = Math.round(total * 1.07);
+  // VAT logic: include = add 7%, exclude/exempt = no VAT
+  const vat = vatOption === 'include' ? Math.round(total * 0.07) : 0;
+  const grandTotal = vatOption === 'include' ? Math.round(total * 1.07) : total;
 
   // Receipt metadata
   const receiptNumber = useMemo(() => {
@@ -186,6 +188,7 @@ export function useReceiptPresenter() {
     total,
     vat,
     grandTotal,
+    vatOption,
 
     // Customer data
     customerName,

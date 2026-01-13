@@ -3,7 +3,7 @@
 import { formatPrice, getProjectTypeById } from '@/src/data/mock/mockFeatures';
 import { useQuotationStore } from '@/src/store/quotationStore';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 /**
  * SummaryPanel Component
@@ -16,6 +16,8 @@ export function SummaryPanel() {
     selectedFeatures,
     selectedPlatforms,
     discountPercent,
+    discountAmount,
+    vatOption,
     getSubtotal,
     getPlatformSubtotal,
     getDiscount,
@@ -23,19 +25,27 @@ export function SummaryPanel() {
     getSelectedFeaturesData,
     getSelectedPlatformsData,
     setDiscountPercent,
+    setDiscountAmount,
+    setVatOption,
     reset,
   } = useQuotationStore();
 
   const [showAllFeatures, setShowAllFeatures] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
+
+  // Prevent hydration mismatch from localStorage persistence
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   const selectedFeaturesData = getSelectedFeaturesData();
   const selectedPlatformsData = getSelectedPlatformsData();
   const projectTypeData = projectType ? getProjectTypeById(projectType) : null;
-  const subtotal = getSubtotal();
-  const platformSubtotal = getPlatformSubtotal();
-  const discount = getDiscount();
-  const total = getTotal();
+  const subtotal = hasMounted ? getSubtotal() : 0;
+  const platformSubtotal = hasMounted ? getPlatformSubtotal() : 0;
+  const discount = hasMounted ? getDiscount() : 0;
+  const total = hasMounted ? getTotal() : 0;
 
   // Show max 5 features, then toggle to show all
   const visibleFeatures = showAllFeatures
@@ -43,7 +53,7 @@ export function SummaryPanel() {
     : selectedFeaturesData.slice(0, 5);
   const hiddenCount = selectedFeaturesData.length - 5;
 
-  const hasItems = projectTypeData || selectedPlatformsData.length > 0 || selectedFeaturesData.length > 0;
+  const hasItems = hasMounted && (projectTypeData || selectedPlatformsData.length > 0 || selectedFeaturesData.length > 0);
 
   return (
     <>
@@ -118,17 +128,45 @@ export function SummaryPanel() {
             <span>{formatPrice(subtotal)}</span>
           </div>
 
-          {/* Discount Input */}
-          <div className="builder-summary-discount">
-            <label>ส่วนลด (%)</label>
-            <input
-              type="number"
-              min="0"
-              max="100"
-              value={discountPercent}
-              onChange={(e) => setDiscountPercent(Number(e.target.value))}
-              className="w-20 px-2 py-1 text-right rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
-            />
+          {/* Discount Input - Two Options */}
+          <div className="builder-summary-discount-section">
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">ส่วนลด</label>
+            </div>
+            
+            {/* Percent Discount */}
+            <div className="flex items-center gap-2 mb-2">
+              <input
+                type="number"
+                min="0"
+                max="100"
+                placeholder="0"
+                value={discountPercent || ''}
+                onChange={(e) => setDiscountPercent(Number(e.target.value))}
+                className="w-16 px-2 py-1 text-right text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
+              />
+              <span className="text-sm text-gray-500">%</span>
+            </div>
+
+            {/* Or Fixed Amount */}
+            <div className="text-xs text-gray-400 text-center mb-2">หรือ</div>
+            
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                min="0"
+                placeholder="จำนวนเงิน"
+                value={discountAmount || ''}
+                onChange={(e) => setDiscountAmount(Number(e.target.value))}
+                className="flex-1 px-2 py-1 text-right text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
+              />
+              <span className="text-sm text-gray-500">฿</span>
+            </div>
+
+            {/* Quick Tip */}
+            <p className="text-xs text-gray-400 mt-2">
+              💡 ระบุ % หรือ จำนวนเงินอย่างใดอย่างหนึ่ง
+            </p>
           </div>
 
           {discount > 0 && (
@@ -147,9 +185,46 @@ export function SummaryPanel() {
             </span>
           </div>
 
-          <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
-            * ราคายังไม่รวม VAT 7%
-          </p>
+          {/* VAT Option Select */}
+          <div className="py-2">
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">VAT</label>
+            <select
+              value={hasMounted ? vatOption : 'include'}
+              onChange={(e) => setVatOption(e.target.value as 'include' | 'exclude' | 'exempt')}
+              className="w-full px-2 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
+            >
+              <option value="include">รวม VAT 7%</option>
+              <option value="exclude">ไม่รวม VAT (คิดเพิ่มภายหลัง)</option>
+              <option value="exempt">ไม่คิด VAT (ยกเว้น)</option>
+            </select>
+          </div>
+
+          {hasMounted && vatOption === 'include' && (
+            <>
+              <div className="builder-summary-row text-sm text-gray-500">
+                <span>VAT 7%</span>
+                <span>{formatPrice(Math.round(total * 0.07))}</span>
+              </div>
+              <div className="builder-summary-row total text-lg">
+                <span>รวมทั้งสิ้น</span>
+                <span className="text-indigo-600 dark:text-indigo-400 font-bold">
+                  {formatPrice(Math.round(total * 1.07))}
+                </span>
+              </div>
+            </>
+          )}
+
+          {hasMounted && vatOption === 'exclude' && (
+            <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
+              * ราคายังไม่รวม VAT 7%
+            </p>
+          )}
+
+          {hasMounted && vatOption === 'exempt' && (
+            <p className="text-xs text-green-600 dark:text-green-400 text-center">
+              ✓ ไม่คิด VAT (ยกเว้น)
+            </p>
+          )}
         </div>
 
         <div className="builder-summary-divider" />

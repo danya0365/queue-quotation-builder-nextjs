@@ -20,6 +20,7 @@ export function useQuotePresenter() {
     projectType,
     selectedFeatures,
     discountPercent,
+    vatOption,
     customerName,
     customerPhone,
     customerEmail,
@@ -50,8 +51,9 @@ export function useQuotePresenter() {
   const subtotal = getSubtotal();
   const discount = getDiscount();
   const total = getTotal();
-  const vat = Math.round(total * 0.07);
-  const grandTotal = Math.round(total * 1.07);
+  // VAT logic: include = add 7%, exclude = show 0 but note, exempt = no VAT
+  const vat = vatOption === 'include' ? Math.round(total * 0.07) : 0;
+  const grandTotal = vatOption === 'include' ? Math.round(total * 1.07) : total;
 
   // Quote metadata
   const quoteNumber = useMemo(() => {
@@ -165,6 +167,7 @@ export function useQuotePresenter() {
     total,
     vat,
     grandTotal,
+    vatOption,
 
     // Customer data
     customerName,

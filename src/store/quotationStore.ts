@@ -4,14 +4,14 @@
  */
 
 import {
-    calculatePlatformPrice,
-    calculateTotalPrice,
-    checkDependencies,
-    getFeatureById,
-    getPlatformById,
-    getProjectTypeById,
-    type Feature,
-    type Platform,
+  calculatePlatformPrice,
+  calculateTotalPrice,
+  checkDependencies,
+  getFeatureById,
+  getPlatformById,
+  getProjectTypeById,
+  type Feature,
+  type Platform,
 } from '@/src/data/mock/mockFeatures';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
@@ -22,6 +22,8 @@ interface QuotationState {
   selectedPlatforms: string[];
   selectedFeatures: string[];
   discountPercent: number;
+  discountAmount: number; // Fixed discount amount (ส่วนลดจำนวนเงิน)
+  vatOption: 'include' | 'exclude' | 'exempt'; // VAT option: include=รวม, exclude=ไม่รวม, exempt=ไม่คิด
   customerName: string;
   customerPhone: string;
   customerEmail: string;
@@ -44,6 +46,8 @@ interface QuotationState {
   togglePlatform: (id: string) => void;
   clearPlatforms: () => void;
   setDiscountPercent: (percent: number) => void;
+  setDiscountAmount: (amount: number) => void;
+  setVatOption: (option: 'include' | 'exclude' | 'exempt') => void; // Set VAT option
   setCustomerInfo: (info: { name?: string; phone?: string; email?: string }) => void;
   setNotes: (notes: string) => void;
   reset: () => void;
@@ -54,6 +58,8 @@ const initialState = {
   selectedPlatforms: [] as string[],
   selectedFeatures: [] as string[],
   discountPercent: 0,
+  discountAmount: 0,
+  vatOption: 'include' as 'include' | 'exclude' | 'exempt', // Default: include VAT
   customerName: '',
   customerPhone: '',
   customerEmail: '',
@@ -82,7 +88,11 @@ export const useQuotationStore = create<QuotationState>()(
 
       getDiscount: () => {
         const subtotal = get().getSubtotal();
-        const { discountPercent } = get();
+        const { discountPercent, discountAmount } = get();
+        // If discountAmount is set, use it; otherwise calculate from percent
+        if (discountAmount > 0) {
+          return discountAmount;
+        }
         return Math.round(subtotal * (discountPercent / 100));
       },
 
@@ -162,7 +172,17 @@ export const useQuotationStore = create<QuotationState>()(
       },
 
       setDiscountPercent: (percent) => {
-        set({ discountPercent: Math.max(0, Math.min(100, percent)) });
+        // When setting percent, clear fixed amount
+        set({ discountPercent: Math.max(0, Math.min(100, percent)), discountAmount: 0 });
+      },
+
+      setDiscountAmount: (amount) => {
+        // When setting fixed amount, clear percent
+        set({ discountAmount: Math.max(0, amount), discountPercent: 0 });
+      },
+
+      setVatOption: (option) => {
+        set({ vatOption: option });
       },
 
       setCustomerInfo: (info) => {
@@ -189,6 +209,8 @@ export const useQuotationStore = create<QuotationState>()(
         selectedPlatforms: state.selectedPlatforms,
         selectedFeatures: state.selectedFeatures,
         discountPercent: state.discountPercent,
+        discountAmount: state.discountAmount,
+        vatOption: state.vatOption,
         customerName: state.customerName,
         customerPhone: state.customerPhone,
         customerEmail: state.customerEmail,
