@@ -77,6 +77,9 @@ export function QuoteView() {
         <a href="/builder" className="main-btn main-btn-ghost">
           ← กลับไป Builder
         </a>
+        <a href="/receipt" className="main-btn main-btn-secondary">
+          🧾 ออกใบเสร็จ
+        </a>
         <button onClick={() => handlePrint()} className="main-btn main-btn-primary">
           🖨️ พิมพ์ใบเสนอราคา
         </button>

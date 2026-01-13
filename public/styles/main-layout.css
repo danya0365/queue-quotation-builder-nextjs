@@ -2233,6 +2233,392 @@
 }
 
 /* ============================================
+   Receipt Page (ใบเสร็จรับเงิน)
+   ============================================ */
+.receipt-page {
+  @apply py-8 px-4 sm:px-6 lg:px-8;
+  @apply max-w-4xl mx-auto;
+}
+
+.receipt-actions {
+  @apply flex items-center justify-between gap-4 mb-6;
+  @apply flex-wrap;
+}
+
+.receipt-document {
+  @apply bg-white dark:bg-gray-800;
+  @apply rounded-2xl shadow-xl;
+  @apply border border-gray-200 dark:border-gray-700;
+  @apply p-8;
+}
+
+.receipt-header {
+  @apply flex justify-between items-start;
+  @apply pb-6 mb-6;
+  @apply border-b-2 border-green-200 dark:border-green-700;
+}
+
+.receipt-company {
+  @apply flex flex-col;
+}
+
+.receipt-company-name {
+  @apply text-3xl font-bold;
+  @apply mb-1;
+}
+
+.receipt-badge {
+  @apply inline-flex items-center gap-2;
+  @apply mt-3 px-4 py-2;
+  @apply bg-green-100 dark:bg-green-900/30;
+  @apply text-green-700 dark:text-green-300;
+  @apply rounded-full text-sm font-semibold;
+  @apply border border-green-200 dark:border-green-700;
+}
+
+.receipt-meta {
+  @apply text-right space-y-1;
+}
+
+.receipt-meta-item {
+  @apply flex items-center gap-2;
+  @apply justify-end;
+}
+
+.receipt-meta-label {
+  @apply text-sm text-gray-500 dark:text-gray-400;
+}
+
+.receipt-meta-value {
+  @apply text-sm font-medium text-gray-900 dark:text-white;
+}
+
+.receipt-status {
+  @apply mt-3;
+}
+
+.receipt-status-badge {
+  @apply inline-flex items-center gap-1;
+  @apply px-4 py-2;
+  @apply bg-green-500 text-white;
+  @apply rounded-full text-sm font-bold;
+  @apply shadow-lg shadow-green-500/30;
+}
+
+.receipt-section {
+  @apply mb-8;
+}
+
+.receipt-section-title {
+  @apply text-lg font-semibold;
+  @apply text-gray-900 dark:text-white;
+  @apply mb-4;
+  @apply pb-2 border-b border-gray-200 dark:border-gray-700;
+}
+
+.receipt-customer {
+  @apply mb-8;
+}
+
+.receipt-customer-form {
+  @apply grid grid-cols-1 sm:grid-cols-3 gap-4;
+}
+
+.receipt-input {
+  @apply w-full px-4 py-3;
+  @apply bg-gray-50 dark:bg-gray-700;
+  @apply border border-gray-300 dark:border-gray-600;
+  @apply rounded-xl;
+  @apply text-gray-900 dark:text-white;
+  @apply placeholder-gray-400 dark:placeholder-gray-500;
+  @apply focus:outline-none focus:ring-2 focus:ring-green-500;
+}
+
+.receipt-label {
+  @apply block text-sm font-medium;
+  @apply text-gray-700 dark:text-gray-300;
+  @apply mb-2;
+}
+
+.receipt-project-type {
+  @apply flex items-center;
+  @apply p-4 rounded-xl;
+  @apply bg-green-50 dark:bg-green-900/30;
+  @apply text-green-900 dark:text-green-100;
+}
+
+.receipt-table {
+  @apply w-full;
+  @apply text-sm;
+}
+
+.receipt-table th {
+  @apply px-4 py-3;
+  @apply bg-gray-100 dark:bg-gray-700;
+  @apply text-left font-semibold;
+  @apply text-gray-900 dark:text-white;
+  @apply border-b border-gray-200 dark:border-gray-600;
+}
+
+.receipt-table td {
+  @apply px-4 py-3;
+  @apply text-gray-700 dark:text-gray-300;
+  @apply border-b border-gray-200 dark:border-gray-700;
+}
+
+.receipt-level {
+  @apply px-2 py-0.5 rounded text-xs font-medium;
+}
+
+.receipt-level.level-basic {
+  @apply bg-green-100 text-green-700;
+}
+
+.receipt-level.level-standard {
+  @apply bg-blue-100 text-blue-700;
+}
+
+.receipt-level.level-premium {
+  @apply bg-purple-100 text-purple-700;
+}
+
+.receipt-summary {
+  @apply bg-green-50 dark:bg-green-900/20;
+  @apply rounded-xl p-6;
+  @apply mb-8;
+  @apply border border-green-200 dark:border-green-800;
+}
+
+.receipt-summary-row {
+  @apply flex items-center justify-between;
+  @apply py-2;
+  @apply text-gray-700 dark:text-gray-300;
+}
+
+.receipt-summary-row.total {
+  @apply text-lg font-semibold;
+  @apply text-gray-900 dark:text-white;
+  @apply border-t border-green-300 dark:border-green-700;
+  @apply pt-4 mt-2;
+}
+
+.receipt-summary-row.grand-total {
+  @apply text-xl font-bold;
+  @apply text-gray-900 dark:text-white;
+  @apply bg-green-100 dark:bg-green-900/50;
+  @apply rounded-lg px-4 py-3 mt-2;
+}
+
+.receipt-summary-row.grand-total.paid {
+  @apply bg-green-500 text-white;
+}
+
+.receipt-summary-row.grand-total.paid span {
+  @apply text-white;
+}
+
+.receipt-payment {
+  @apply mb-8;
+}
+
+.receipt-payment-form {
+  @apply space-y-4;
+}
+
+.receipt-payment-grid {
+  @apply grid grid-cols-1 sm:grid-cols-3 gap-4;
+}
+
+.receipt-payment-info {
+  @apply space-y-2;
+  @apply p-4 rounded-xl;
+  @apply bg-gray-50;
+}
+
+.receipt-payment-info-item {
+  @apply flex items-center gap-2;
+}
+
+.receipt-payment-info-label {
+  @apply font-medium text-gray-600;
+}
+
+.receipt-payment-info-value {
+  @apply text-gray-900;
+}
+
+.receipt-notes {
+  @apply mb-8;
+}
+
+.receipt-footer {
+  @apply pt-8 border-t border-gray-200 dark:border-gray-700;
+}
+
+.receipt-signature {
+  @apply grid grid-cols-2 gap-8;
+  @apply max-w-lg mx-auto;
+}
+
+.receipt-signature-box {
+  @apply text-center;
+}
+
+.receipt-signature-line {
+  @apply h-px bg-gray-400 dark:bg-gray-600;
+  @apply mb-2 mt-16;
+}
+
+.receipt-empty {
+  @apply min-h-[60vh] flex items-center justify-center;
+}
+
+.receipt-empty-content {
+  @apply text-center;
+  @apply p-8;
+}
+
+/* Receipt Print Styles */
+@media print {
+  .receipt-page {
+    @apply p-0;
+  }
+
+  .receipt-document {
+    @apply shadow-none border-0 rounded-none;
+    padding: 0 !important;
+    max-width: 100%;
+  }
+
+  .receipt-header {
+    @apply pb-2 mb-2;
+    @apply border-b border-green-400;
+  }
+
+  .receipt-company-name {
+    font-size: 1.25rem !important;
+  }
+
+  .receipt-badge {
+    @apply mt-1 px-2 py-1 text-xs;
+    @apply bg-green-200 text-green-800 border-green-400;
+  }
+
+  .receipt-status-badge {
+    @apply px-2 py-1 text-xs;
+    @apply bg-green-600 text-white;
+  }
+
+  .receipt-section {
+    @apply mb-2;
+    page-break-inside: avoid;
+  }
+
+  .receipt-section-title {
+    @apply text-sm mb-1 pb-1;
+  }
+
+  .receipt-customer-print {
+    @apply mb-2;
+  }
+
+  .receipt-project-type {
+    @apply p-2 text-sm;
+    @apply bg-green-100 text-green-900;
+  }
+
+  .receipt-table {
+    @apply border-collapse;
+    font-size: 10px !important;
+  }
+
+  .receipt-table th {
+    @apply px-2 py-1;
+    @apply border border-gray-300;
+  }
+
+  .receipt-table td {
+    @apply px-2 py-1;
+    @apply border border-gray-300;
+  }
+
+  .receipt-level {
+    @apply px-1 py-0;
+    font-size: 9px !important;
+  }
+
+  .receipt-level.level-basic {
+    @apply bg-green-100 text-green-800;
+  }
+
+  .receipt-level.level-standard {
+    @apply bg-blue-100 text-blue-800;
+  }
+
+  .receipt-level.level-premium {
+    @apply bg-purple-100 text-purple-800;
+  }
+
+  .receipt-summary {
+    @apply p-2 mb-2;
+    @apply bg-green-100 border-green-300;
+  }
+
+  .receipt-summary-row {
+    @apply py-0.5 text-sm;
+  }
+
+  .receipt-summary-row.total {
+    @apply text-sm pt-1 mt-1;
+  }
+
+  .receipt-summary-row.grand-total {
+    @apply text-base px-2 py-1 mt-1;
+    @apply bg-green-200 text-green-900;
+  }
+
+  .receipt-summary-row.grand-total.paid {
+    @apply bg-green-500 text-white;
+  }
+
+  .receipt-payment {
+    @apply mb-2;
+  }
+
+  .receipt-payment-info {
+    @apply p-2;
+  }
+
+  .receipt-payment-info-item {
+    @apply text-sm;
+  }
+
+  .receipt-notes {
+    @apply mb-2;
+  }
+
+  .receipt-notes p {
+    @apply text-xs;
+  }
+
+  .receipt-footer {
+    @apply pt-2;
+  }
+
+  .receipt-signature {
+    @apply gap-4;
+  }
+
+  .receipt-signature-line {
+    @apply mt-8 mb-1;
+  }
+
+  .receipt-signature-box p {
+    @apply text-xs;
+  }
+}
+
+/* ============================================
    About Page
    ============================================ */
 .about-page {
