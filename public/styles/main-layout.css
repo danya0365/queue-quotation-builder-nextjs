@@ -2222,12 +2222,103 @@
     @apply bg-indigo-100 text-indigo-900;
   }
 
-  /* Page break settings */
-  .quote-document {
+  /* Quote Header Print */
+  .quote-header {
+    @apply pb-2 mb-2;
+    @apply border-b border-indigo-400;
+  }
+
+  .quote-company-name {
+    font-size: 1.25rem !important;
+  }
+
+  /* Quote Section Print */
+  .quote-section {
+    @apply mb-2;
     page-break-inside: avoid;
   }
 
-  .quote-section {
+  .quote-section-title {
+    @apply text-sm mb-1 pb-1;
+  }
+
+  .quote-customer-print {
+    @apply mb-2;
+  }
+
+  .quote-project-type {
+    @apply p-2 text-sm;
+    @apply bg-indigo-100 text-indigo-900;
+  }
+
+  /* Quote Table Print */
+  .quote-table {
+    @apply border-collapse;
+    font-size: 10px !important;
+  }
+
+  .quote-table th {
+    @apply px-2 py-1;
+    @apply border border-gray-300;
+  }
+
+  .quote-table td {
+    @apply px-2 py-1;
+    @apply border border-gray-300;
+  }
+
+  .quote-level {
+    @apply px-1 py-0;
+    font-size: 9px !important;
+  }
+
+  /* Quote Summary Print */
+  .quote-summary {
+    @apply p-2 mb-2;
+    @apply bg-indigo-100 border-indigo-300;
+  }
+
+  .quote-summary-row {
+    @apply py-0.5 text-sm;
+  }
+
+  .quote-summary-row.total {
+    @apply text-sm pt-1 mt-1;
+  }
+
+  .quote-summary-row.grand-total {
+    @apply text-base px-2 py-1 mt-1;
+    @apply bg-indigo-200 text-indigo-900;
+  }
+
+  /* Quote Notes Print */
+  .quote-notes {
+    @apply mb-2;
+  }
+
+  .quote-terms {
+    font-size: 10px !important;
+  }
+
+  /* Quote Footer Print */
+  .quote-footer {
+    @apply pt-2;
+  }
+
+  .quote-signature {
+    @apply gap-4;
+  }
+
+  .quote-signature-line {
+    @apply mt-8 mb-1;
+  }
+
+  .quote-signature-box p {
+    @apply text-xs;
+  }
+
+  /* Page break settings */
+  .quote-document {
     page-break-inside: avoid;
   }
 }
