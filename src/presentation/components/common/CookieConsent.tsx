@@ -1,5 +1,6 @@
 'use client';
 
+import dayjs from 'dayjs';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -23,7 +24,7 @@ export function CookieConsent() {
   const handleAccept = () => {
     localStorage.setItem('cookie-consent', JSON.stringify({
       accepted: true,
-      timestamp: new Date().toISOString(),
+      timestamp: dayjs().toISOString(),
       version: '1.0',
     }));
     setShowBanner(false);
@@ -32,7 +33,7 @@ export function CookieConsent() {
   const handleDecline = () => {
     localStorage.setItem('cookie-consent', JSON.stringify({
       accepted: false,
-      timestamp: new Date().toISOString(),
+      timestamp: dayjs().toISOString(),
       version: '1.0',
     }));
     setShowBanner(false);

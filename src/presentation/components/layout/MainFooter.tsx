@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import Link from 'next/link';
 
 /**
@@ -5,7 +6,7 @@ import Link from 'next/link';
  * Mobile-friendly footer with stacked layout
  */
 export function MainFooter() {
-  const currentYear = new Date().getFullYear();
+  const currentYear = dayjs().year();
 
   return (
     <footer className="main-footer">

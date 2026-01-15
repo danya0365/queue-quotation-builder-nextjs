@@ -1,6 +1,6 @@
 'use client';
 
-import type { Feature, FeatureLevel, FeaturePackage } from '@/src/data/mock/mockFeatures';
+import type { Feature, FeatureLevel, FeaturePackage, Platform } from '@/src/data/mock/mockFeatures';
 import { useBuilderPresenter } from '@/src/presentation/hooks/useBuilderPresenter';
 import { SummaryPanel } from './SummaryPanel';
 

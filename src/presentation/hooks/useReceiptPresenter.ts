@@ -6,6 +6,8 @@ import {
   type Feature,
 } from '@/src/data/mock/mockFeatures';
 import { useQuotationStore } from '@/src/store/quotationStore';
+import dayjs from 'dayjs';
+import 'dayjs/locale/th';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
@@ -37,7 +39,7 @@ export function useReceiptPresenter() {
   const [paymentMethod, setPaymentMethod] = useState('');
   const [paymentReference, setPaymentReference] = useState('');
   const [paidDate, setPaidDate] = useState(() => {
-    return new Date().toISOString().split('T')[0]; // Default to today
+    return dayjs().format('YYYY-MM-DD'); // Default to today
   });
   const [isLoading, setIsLoading] = useState(false);
   const printRef = useRef<HTMLDivElement>(null);
@@ -62,24 +64,18 @@ export function useReceiptPresenter() {
 
   // Receipt metadata
   const receiptNumber = useMemo(() => {
-    const date = new Date();
+    const now = dayjs();
     const random = Math.random().toString(36).substring(2, 6).toUpperCase();
-    return `RC-${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}-${random}`;
+    return `RC-${now.format('YYYYMMDD')}-${random}`;
   }, []);
 
-  const receiptDate = new Date().toLocaleDateString('th-TH', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
+  const receiptDate = useMemo(() => {
+    return dayjs().locale('th').format('D MMMM YYYY');
+  }, []);
 
   const formattedPaidDate = useMemo(() => {
     if (!paidDate) return '';
-    return new Date(paidDate).toLocaleDateString('th-TH', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    });
+    return dayjs(paidDate).locale('th').format('D MMMM YYYY');
   }, [paidDate]);
 
   // Group features by category

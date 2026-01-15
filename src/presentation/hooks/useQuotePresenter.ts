@@ -1,11 +1,13 @@
 'use client';
 
 import {
-    formatPrice,
-    getProjectTypeById,
-    type Feature,
+  formatPrice,
+  getProjectTypeById,
+  type Feature,
 } from '@/src/data/mock/mockFeatures';
 import { useQuotationStore } from '@/src/store/quotationStore';
+import dayjs from 'dayjs';
+import 'dayjs/locale/th';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
@@ -57,22 +59,18 @@ export function useQuotePresenter() {
 
   // Quote metadata
   const quoteNumber = useMemo(() => {
-    const date = new Date();
+    const now = dayjs();
     const random = Math.random().toString(36).substring(2, 6).toUpperCase();
-    return `QQ-${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}-${random}`;
+    return `QQ-${now.format('YYYYMMDD')}-${random}`;
   }, []);
 
-  const quoteDate = new Date().toLocaleDateString('th-TH', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
-
-  const validUntil = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString('th-TH', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
+  const quoteDate = useMemo(() => {
+    return dayjs().locale('th').format('D MMMM YYYY');
+  }, []);
+ 
+  const validUntil = useMemo(() => {
+    return dayjs().add(30, 'day').locale('th').format('D MMMM YYYY');
+  }, []);
 
   // Group features by category
   const groupedFeatures = useMemo(() => {
