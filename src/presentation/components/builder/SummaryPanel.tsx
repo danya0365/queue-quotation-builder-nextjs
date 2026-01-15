@@ -1,5 +1,6 @@
 'use client';
 
+import { VAT_CONFIG } from '@/src/config/quotation.config';
 import { formatPrice, getProjectTypeById } from '@/src/data/mock/mockFeatures';
 import { useQuotationStore } from '@/src/store/quotationStore';
 import Link from 'next/link';
@@ -202,13 +203,13 @@ export function SummaryPanel() {
           {hasMounted && vatOption === 'include' && (
             <>
               <div className="builder-summary-row text-sm text-gray-500">
-                <span>VAT 7%</span>
-                <span>{formatPrice(Math.round(total * 0.07))}</span>
+                <span>VAT {VAT_CONFIG.ratePercent}%</span>
+                <span>{formatPrice(Math.round(total * VAT_CONFIG.rate))}</span>
               </div>
               <div className="builder-summary-row total text-lg">
                 <span>รวมทั้งสิ้น</span>
                 <span className="text-indigo-600 dark:text-indigo-400 font-bold">
-                  {formatPrice(Math.round(total * 1.07))}
+                  {formatPrice(Math.round(total * VAT_CONFIG.multiplier))}
                 </span>
               </div>
             </>
@@ -216,7 +217,7 @@ export function SummaryPanel() {
 
           {hasMounted && vatOption === 'exclude' && (
             <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
-              * ราคายังไม่รวม VAT 7%
+              * ราคายังไม่รวม VAT {VAT_CONFIG.ratePercent}%
             </p>
           )}
 
@@ -236,6 +237,13 @@ export function SummaryPanel() {
             className="main-btn main-btn-primary w-full justify-center"
           >
             📄 ดูใบเสนอราคา
+          </Link>
+
+          <Link
+            href="/invoice"
+            className="main-btn main-btn-secondary w-full justify-center"
+          >
+            📝 ออกใบแจ้งหนี้
           </Link>
 
           <button
@@ -325,6 +333,12 @@ export function SummaryPanel() {
                 className="main-btn main-btn-primary flex-1 justify-center"
               >
                 📄 ใบเสนอราคา
+              </Link>
+              <Link
+                href="/invoice"
+                className="main-btn main-btn-secondary flex-1 justify-center"
+              >
+                📝 ใบแจ้งหนี้
               </Link>
               <button
                 onClick={() => {

@@ -1,9 +1,10 @@
 'use client';
 
+import { DOCUMENT_PREFIXES, VAT_CONFIG } from '@/src/config/quotation.config';
 import {
-  formatPrice,
-  getProjectTypeById,
-  type Feature,
+    formatPrice,
+    getProjectTypeById,
+    type Feature,
 } from '@/src/data/mock/mockFeatures';
 import { useQuotationStore } from '@/src/store/quotationStore';
 import dayjs from 'dayjs';
@@ -59,14 +60,14 @@ export function useReceiptPresenter() {
   const discount = getDiscount();
   const total = getTotal();
   // VAT logic: include = add 7%, exclude/exempt = no VAT
-  const vat = vatOption === 'include' ? Math.round(total * 0.07) : 0;
-  const grandTotal = vatOption === 'include' ? Math.round(total * 1.07) : total;
+  const vat = vatOption === 'include' ? Math.round(total * VAT_CONFIG.rate) : 0;
+  const grandTotal = vatOption === 'include' ? Math.round(total * VAT_CONFIG.multiplier) : total;
 
   // Receipt metadata
   const receiptNumber = useMemo(() => {
     const now = dayjs();
     const random = Math.random().toString(36).substring(2, 6).toUpperCase();
-    return `RC-${now.format('YYYYMMDD')}-${random}`;
+    return `${DOCUMENT_PREFIXES.receipt}-${now.format('YYYYMMDD')}-${random}`;
   }, []);
 
   const receiptDate = useMemo(() => {

@@ -1,5 +1,6 @@
 'use client';
 
+import { COMPANY_INFO } from '@/src/config/company.config';
 import { getCategoryById } from '@/src/data/mock/mockFeatures';
 import { useReceiptPresenter } from '@/src/presentation/hooks/useReceiptPresenter';
 
@@ -85,12 +86,17 @@ export function ReceiptView() {
         <a href="/builder" className="main-btn main-btn-ghost">
           ← กลับไป Builder
         </a>
-        <a href="/quote" className="main-btn main-btn-secondary">
-          📋 ดูใบเสนอราคา
-        </a>
-        <button onClick={() => handlePrint()} className="main-btn main-btn-primary">
-          🖨️ พิมพ์ใบเสร็จรับเงิน
-        </button>
+        <div className="flex gap-2">
+          <a href="/quote" className="main-btn main-btn-secondary">
+            📋 ใบเสนอราคา
+          </a>
+          <a href="/invoice" className="main-btn main-btn-secondary">
+            📝 ใบแจ้งหนี้
+          </a>
+          <button onClick={() => handlePrint()} className="main-btn main-btn-primary">
+            🖨️ พิมพ์ใบเสร็จ
+          </button>
+        </div>
       </div>
 
       {/* Receipt Document */}
@@ -597,7 +603,7 @@ function ReceiptFooter() {
         <div className="receipt-signature-box">
           <div className="receipt-signature-line" />
           <p>ผู้รับเงิน</p>
-          <p className="text-sm text-gray-500">Queue Quote Co., Ltd.</p>
+          <p className="text-sm text-gray-500">{COMPANY_INFO.name}</p>
         </div>
         <div className="receipt-signature-box">
           <div className="receipt-signature-line" />

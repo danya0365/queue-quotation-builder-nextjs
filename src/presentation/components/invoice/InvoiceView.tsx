@@ -1,18 +1,18 @@
 'use client';
 
-import { COMPANY_INFO } from '@/src/config/company.config';
-import { VAT_CONFIG } from '@/src/config/quotation.config';
+import { COMPANY_INFO, PAYMENT_CONTACT, PROMPTPAY_INFO, getPrimaryBankAccount } from '@/src/config/company.config';
+import { INVOICE_TERMS, VAT_CONFIG } from '@/src/config/quotation.config';
 import { getCategoryById } from '@/src/data/mock/mockFeatures';
-import { useQuotePresenter } from '@/src/presentation/hooks/useQuotePresenter';
+import { useInvoicePresenter } from '@/src/presentation/hooks/useInvoicePresenter';
 import { Fragment } from 'react';
 
 
 /**
- * QuoteView Component
- * Print-friendly quotation view
+ * InvoiceView Component
+ * Print-friendly invoice view for payment request
  * Following Clean Architecture - uses presenter hook for logic
  */
-export function QuoteView() {
+export function InvoiceView() {
   const {
     // Refs
     printRef,
@@ -20,10 +20,11 @@ export function QuoteView() {
     // State
     hasContent,
 
-    // Quote metadata
-    quoteNumber,
-    quoteDate,
-    validUntil,
+    // Invoice metadata
+    invoiceNumber,
+    invoiceDate,
+    dueDate,
+    formattedDueDate,
 
     // Project data
     projectTypeData,
@@ -52,10 +53,11 @@ export function QuoteView() {
     updateCustomerPhone,
     updateCustomerEmail,
     updateNotes,
+    updateDueDate,
 
     // Utilities
     formatPrice,
-  } = useQuotePresenter();
+  } = useInvoicePresenter();
 
   // Group features by category for display
   const groupedFeatures = selectedFeaturesData.reduce((acc, feature) => {
@@ -70,36 +72,42 @@ export function QuoteView() {
 
   // Empty state
   if (!hasContent) {
-    return <QuoteEmptyState />;
+    return <InvoiceEmptyState />;
   }
 
   return (
-    <div className="quote-page">
+    <div className="invoice-page">
       {/* Action Bar (hidden when printing) */}
-      <div className="quote-actions print-hidden">
+      <div className="invoice-actions print-hidden">
         <a href="/builder" className="main-btn main-btn-ghost">
           ← กลับไป Builder
         </a>
         <div className="flex gap-2">
-          <a href="/invoice" className="main-btn main-btn-secondary">
-            📝 ใบแจ้งหนี้
+          <a href="/quote" className="main-btn main-btn-secondary">
+            📋 ใบเสนอราคา
           </a>
           <a href="/receipt" className="main-btn main-btn-secondary">
             🧾 ใบเสร็จ
           </a>
           <button onClick={() => handlePrint()} className="main-btn main-btn-primary">
-            🖨️ พิมพ์ใบเสนอราคา
+            🖨️ พิมพ์ใบแจ้งหนี้
           </button>
         </div>
       </div>
 
-      {/* Quotation Document */}
-      <div ref={printRef} className="quote-document">
+      {/* Invoice Document */}
+      <div ref={printRef} className="invoice-document">
         {/* Header */}
-        <QuoteHeader
-          quoteNumber={quoteNumber}
-          quoteDate={quoteDate}
-          validUntil={validUntil}
+        <InvoiceHeader
+          invoiceNumber={invoiceNumber}
+          invoiceDate={invoiceDate}
+          formattedDueDate={formattedDueDate}
+        />
+
+        {/* Due Date Editor (hidden in print) */}
+        <DueDateEditor
+          dueDate={dueDate}
+          onDueDateChange={updateDueDate}
         />
 
         {/* Customer Info (editable - hidden in print) */}
@@ -121,9 +129,9 @@ export function QuoteView() {
 
         {/* Project Type */}
         {projectTypeData && (
-          <section className="quote-section">
-            <h3 className="quote-section-title">ประเภทธุรกิจ</h3>
-            <div className="quote-project-type">
+          <section className="invoice-section">
+            <h3 className="invoice-section-title">ประเภทธุรกิจ</h3>
+            <div className="invoice-project-type">
               <span className="text-2xl mr-2">{projectTypeData.icon}</span>
               <span className="font-semibold">{projectTypeData.name}</span>
               <span className="text-gray-500 ml-2">({projectTypeData.nameEn})</span>
@@ -139,7 +147,7 @@ export function QuoteView() {
         />
 
         {/* Summary */}
-        <QuoteSummary
+        <InvoiceSummary
           subtotal={subtotal}
           discount={discount}
           discountPercent={discountPercent}
@@ -150,14 +158,17 @@ export function QuoteView() {
           formatPrice={formatPrice}
         />
 
+        {/* Payment Info */}
+        <PaymentInfo />
+
         {/* Notes */}
-        <QuoteNotes
+        <InvoiceNotes
           notes={notes}
           onNotesChange={updateNotes}
         />
 
         {/* Footer */}
-        <QuoteFooter />
+        <InvoiceFooter />
       </div>
     </div>
   );
@@ -167,11 +178,11 @@ export function QuoteView() {
 // Sub-components
 // ============================================
 
-function QuoteEmptyState() {
+function InvoiceEmptyState() {
   return (
-    <div className="quote-empty">
-      <div className="quote-empty-content">
-        <span className="text-6xl mb-4">📋</span>
+    <div className="invoice-empty">
+      <div className="invoice-empty-content">
+        <span className="text-6xl mb-4">📝</span>
         <h2 className="text-2xl font-bold mb-2">ยังไม่มีรายการ</h2>
         <p className="text-gray-500 dark:text-gray-400 mb-6">
           กรุณาเลือกประเภทธุรกิจและฟีเจอร์ใน Builder ก่อน
@@ -184,37 +195,66 @@ function QuoteEmptyState() {
   );
 }
 
-interface QuoteHeaderProps {
-  quoteNumber: string;
-  quoteDate: string;
-  validUntil: string;
+interface InvoiceHeaderProps {
+  invoiceNumber: string;
+  invoiceDate: string;
+  formattedDueDate: string;
 }
 
-function QuoteHeader({ quoteNumber, quoteDate, validUntil }: QuoteHeaderProps) {
+function InvoiceHeader({ invoiceNumber, invoiceDate, formattedDueDate }: InvoiceHeaderProps) {
   return (
-    <header className="quote-header">
-      <div className="quote-company">
-        <h1 className="quote-company-name">
-          <span className="text-indigo-600">Queue</span>
+    <header className="invoice-header">
+      <div className="invoice-company">
+        <h1 className="invoice-company-name">
+          <span className="text-orange-600">Queue</span>
           <span className="text-gray-800 dark:text-white print:text-gray-800">Quote</span>
         </h1>
         <p className="text-sm text-gray-500">ระบบจัดการคิวอัจฉริยะ</p>
+        <div className="invoice-badge">
+          📝 ใบแจ้งหนี้
+        </div>
       </div>
-      <div className="quote-meta">
-        <div className="quote-meta-item">
-          <span className="quote-meta-label">เลขที่ใบเสนอราคา</span>
-          <span className="quote-meta-value">{quoteNumber}</span>
+      <div className="invoice-meta">
+        <div className="invoice-meta-item">
+          <span className="invoice-meta-label">เลขที่ใบแจ้งหนี้</span>
+          <span className="invoice-meta-value">{invoiceNumber}</span>
         </div>
-        <div className="quote-meta-item">
-          <span className="quote-meta-label">วันที่</span>
-          <span className="quote-meta-value">{quoteDate}</span>
+        <div className="invoice-meta-item">
+          <span className="invoice-meta-label">วันที่ออก</span>
+          <span className="invoice-meta-value">{invoiceDate}</span>
         </div>
-        <div className="quote-meta-item">
-          <span className="quote-meta-label">ใช้ได้ถึง</span>
-          <span className="quote-meta-value text-red-600">{validUntil}</span>
+        <div className="invoice-meta-item">
+          <span className="invoice-meta-label">ครบกำหนดชำระ</span>
+          <span className="invoice-meta-value text-orange-600 font-bold">{formattedDueDate}</span>
+        </div>
+        <div className="invoice-status">
+          <span className="invoice-status-badge">
+            ⏳ รอชำระเงิน
+          </span>
         </div>
       </div>
     </header>
+  );
+}
+
+interface DueDateEditorProps {
+  dueDate: string;
+  onDueDateChange: (value: string) => void;
+}
+
+function DueDateEditor({ dueDate, onDueDateChange }: DueDateEditorProps) {
+  return (
+    <section className="invoice-due-date-editor print-hidden">
+      <label className="invoice-label">
+        วันครบกำหนดชำระ
+      </label>
+      <input
+        type="date"
+        value={dueDate}
+        onChange={(e) => onDueDateChange(e.target.value)}
+        className="invoice-input w-auto"
+      />
+    </section>
   );
 }
 
@@ -236,29 +276,29 @@ function CustomerInfoForm({
   onEmailChange,
 }: CustomerInfoFormProps) {
   return (
-    <section className="quote-customer print-hidden">
-      <h3 className="quote-section-title">ข้อมูลลูกค้า</h3>
-      <div className="quote-customer-form">
+    <section className="invoice-customer print-hidden">
+      <h3 className="invoice-section-title">ข้อมูลลูกค้า</h3>
+      <div className="invoice-customer-form">
         <input
           type="text"
           placeholder="ชื่อบริษัท/ร้านค้า"
           value={customerName}
           onChange={(e) => onNameChange(e.target.value)}
-          className="quote-input"
+          className="invoice-input"
         />
         <input
           type="tel"
           placeholder="เบอร์โทรศัพท์"
           value={customerPhone}
           onChange={(e) => onPhoneChange(e.target.value)}
-          className="quote-input"
+          className="invoice-input"
         />
         <input
           type="email"
           placeholder="อีเมล"
           value={customerEmail}
           onChange={(e) => onEmailChange(e.target.value)}
-          className="quote-input"
+          className="invoice-input"
         />
       </div>
     </section>
@@ -279,8 +319,8 @@ function CustomerInfoPrint({
   if (!customerName && !customerPhone && !customerEmail) return null;
 
   return (
-    <section className="quote-customer-print print-show" style={{ display: 'none' }}>
-      <h3 className="quote-section-title">เรียน</h3>
+    <section className="invoice-customer-print print-show" style={{ display: 'none' }}>
+      <h3 className="invoice-section-title">เรียกเก็บเงินจาก</h3>
       <div className="space-y-1">
         {customerName && <p className="font-semibold">{customerName}</p>}
         {customerPhone && <p>โทร: {customerPhone}</p>}
@@ -300,9 +340,9 @@ function FeaturesTable({ projectTypeData, groupedFeatures, formatPrice }: Featur
   let rowIndex = 0;
 
   return (
-    <section className="quote-section">
-      <h3 className="quote-section-title">รายการฟีเจอร์</h3>
-      <table className="quote-table">
+    <section className="invoice-section">
+      <h3 className="invoice-section-title">รายการฟีเจอร์</h3>
+      <table className="invoice-table">
         <thead>
           <tr>
             <th className="text-center">#</th>
@@ -343,7 +383,7 @@ function FeaturesTable({ projectTypeData, groupedFeatures, formatPrice }: Featur
                     <div className="text-xs text-gray-500">{feature.description}</div>
                   </td>
                   <td className="text-center">
-                    <span className={`quote-level level-${feature.level}`}>
+                    <span className={`invoice-level level-${feature.level}`}>
                       {feature.level.charAt(0).toUpperCase() + feature.level.slice(1)}
                     </span>
                   </td>
@@ -360,7 +400,7 @@ function FeaturesTable({ projectTypeData, groupedFeatures, formatPrice }: Featur
   );
 }
 
-interface QuoteSummaryProps {
+interface InvoiceSummaryProps {
   subtotal: number;
   discount: number;
   discountPercent: number;
@@ -371,7 +411,7 @@ interface QuoteSummaryProps {
   formatPrice: (price: number) => string;
 }
 
-function QuoteSummary({
+function InvoiceSummary({
   subtotal,
   discount,
   discountPercent,
@@ -380,36 +420,36 @@ function QuoteSummary({
   grandTotal,
   vatOption,
   formatPrice,
-}: QuoteSummaryProps) {
+}: InvoiceSummaryProps) {
   return (
-    <section className="quote-summary">
-      <div className="quote-summary-row">
+    <section className="invoice-summary">
+      <div className="invoice-summary-row">
         <span>รวมเป็นเงิน</span>
         <span className="font-mono">{formatPrice(subtotal)}</span>
       </div>
       {discount > 0 && (
-        <div className="quote-summary-row text-green-600">
+        <div className="invoice-summary-row text-green-600">
           <span>ส่วนลด {discountPercent > 0 ? `(${discountPercent}%)` : ''}</span>
           <span className="font-mono">-{formatPrice(discount)}</span>
         </div>
       )}
-      <div className="quote-summary-row total">
+      <div className="invoice-summary-row total">
         <span>ราคาสุทธิ {vatOption === 'include' ? '(ก่อน VAT)' : ''}</span>
         <span className="font-mono">{formatPrice(total)}</span>
       </div>
       {vatOption === 'include' && (
-        <div className="quote-summary-row">
+        <div className="invoice-summary-row">
           <span>VAT {VAT_CONFIG.ratePercent}%</span>
           <span className="font-mono">{formatPrice(vat)}</span>
         </div>
       )}
-      <div className="quote-summary-row grand-total">
+      <div className="invoice-summary-row grand-total">
         <span>
-          {vatOption === 'include' && 'ยอดรวมทั้งสิ้น'}
-          {vatOption === 'exclude' && 'ราคาสุทธิ (ไม่รวม VAT)'}
-          {vatOption === 'exempt' && 'ราคาสุทธิ (ไม่คิด VAT)'}
+          💰 {vatOption === 'include' && 'ยอดที่ต้องชำระ'}
+          {vatOption === 'exclude' && 'ยอดที่ต้องชำระ (ไม่รวม VAT)'}
+          {vatOption === 'exempt' && 'ยอดที่ต้องชำระ (ไม่คิด VAT)'}
         </span>
-        <span className="font-mono text-indigo-600 print:text-indigo-600">
+        <span className="font-mono text-orange-600 print:text-orange-700">
           {formatPrice(grandTotal)}
         </span>
       </div>
@@ -417,48 +457,79 @@ function QuoteSummary({
   );
 }
 
-interface QuoteNotesProps {
+function PaymentInfo() {
+  const bank = getPrimaryBankAccount();
+  
+  return (
+    <section className="invoice-payment">
+      <h3 className="invoice-section-title">ช่องทางการชำระเงิน</h3>
+      <div className="invoice-payment-details">
+        <div className="invoice-payment-method">
+          <div className="invoice-payment-method-title">{bank.icon} โอนเงินผ่านธนาคาร</div>
+          <div className="invoice-payment-method-content">
+            <p><strong>ธนาคาร:</strong> {bank.bankName}</p>
+            <p><strong>เลขบัญชี:</strong> {bank.accountNo}</p>
+            <p><strong>ชื่อบัญชี:</strong> {bank.accountName}</p>
+          </div>
+        </div>
+        <div className="invoice-payment-method">
+          <div className="invoice-payment-method-title">{PROMPTPAY_INFO.icon} PromptPay</div>
+          <div className="invoice-payment-method-content">
+            <p><strong>เลขพร้อมเพย์:</strong> {PROMPTPAY_INFO.number}</p>
+            <p><strong>ชื่อ:</strong> {PROMPTPAY_INFO.name}</p>
+          </div>
+        </div>
+      </div>
+      <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
+        {PAYMENT_CONTACT.instruction}
+      </p>
+    </section>
+  );
+}
+
+interface InvoiceNotesProps {
   notes: string;
   onNotesChange: (value: string) => void;
 }
 
-function QuoteNotes({ notes, onNotesChange }: QuoteNotesProps) {
+function InvoiceNotes({ notes, onNotesChange }: InvoiceNotesProps) {
   return (
-    <section className="quote-notes">
-      <h3 className="quote-section-title">หมายเหตุ</h3>
+    <section className="invoice-notes">
+      <h3 className="invoice-section-title">หมายเหตุ</h3>
       <textarea
         placeholder="เพิ่มหมายเหตุหรือเงื่อนไขพิเศษ..."
         value={notes}
         onChange={(e) => onNotesChange(e.target.value)}
-        className="quote-input print-hidden"
+        className="invoice-input print-hidden"
         rows={3}
       />
       {notes && (
-        <p className="quote-notes-text hidden print:block whitespace-pre-wrap text-gray-700 mb-4">
+        <p className="invoice-notes-text hidden print:block whitespace-pre-wrap text-gray-700 mb-4">
           {notes}
         </p>
       )}
-      <ul className="quote-terms">
-        <li>ราคานี้มีผล 30 วันนับจากวันที่ออกใบเสนอราคา</li>
-        <li>ราคารวมแล้วนี้รวมบริการ: ติดตั้ง, Training, Support 3 เดือน</li>
-        <li>เงื่อนไขการชำระ: 50% เมื่อตกลง, 50% เมื่อส่งมอบงาน</li>
+      <ul className="invoice-terms">
+        {INVOICE_TERMS.map((term, idx) => (
+          <li key={idx}>{term}</li>
+        ))}
+        <li>หากมีข้อสงสัย กรุณาติดต่อ {COMPANY_INFO.phone}</li>
       </ul>
     </section>
   );
 }
 
-function QuoteFooter() {
+function InvoiceFooter() {
   return (
-    <footer className="quote-footer">
-      <div className="quote-signature">
-        <div className="quote-signature-box">
-          <div className="quote-signature-line" />
-          <p>ผู้เสนอราคา</p>
+    <footer className="invoice-footer">
+      <div className="invoice-signature">
+        <div className="invoice-signature-box">
+          <div className="invoice-signature-line" />
+          <p>ผู้ออกใบแจ้งหนี้</p>
           <p className="text-sm text-gray-500">{COMPANY_INFO.name}</p>
         </div>
-        <div className="quote-signature-box">
-          <div className="quote-signature-line" />
-          <p>ผู้อนุมัติ</p>
+        <div className="invoice-signature-box">
+          <div className="invoice-signature-line" />
+          <p>ผู้รับใบแจ้งหนี้</p>
           <p className="text-sm text-gray-500">ลูกค้า</p>
         </div>
       </div>
