@@ -25,7 +25,7 @@ export const COMPANY_INFO = {
   /** Company phone */
   phone: '089-484-7773',
   /** Primary email */
-  email: 'marosdee.fuzaba@gmail.com',
+  email: 'marosdee.fuzana@gmail.com',
   /** LINE ID */
   lineId: '@marosdee7',
   /** Website URL */
@@ -59,9 +59,9 @@ export const PROMPTPAY_INFO = {
  * Payment Contact Information
  */
 export const PAYMENT_CONTACT = {
-  email: 'marosdee.fuzaba@gmail.com',
+  email: 'marosdee.fuzana@gmail.com',
   lineId: '@marosdee7',
-  instruction: 'กรุณาส่งหลักฐานการโอนเงินมาที่ marosdee.fuzaba@gmail.com หรือ LINE: @marosdee7',
+  instruction: 'กรุณาส่งหลักฐานการโอนเงินมาที่ marosdee.fuzana@gmail.com หรือ LINE: @marosdee7',
 } as const;
 
 /**
